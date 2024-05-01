@@ -1,0 +1,21 @@
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+</head>
+
+<body>
+  <h1>Getting Lost</h1>
+  <p>Please mark on the map roughly where you were coming from and going to and where you got lost. You can drag the flags to the position you want, if necessary zoom in and move them again. Then check as many of the reasons on the right for getting lost as apply. Finally, please click the submit button to send us your information.
+  <div class='row'>
+    <div class='column'>
+      <div id='mapbox'>
+        <div id="map"></div>
+      </div>
+    </div>
+    <div class='column' id='right'>
+      <div id='checks'></div>
+    </div>
+  </div>
+</body>

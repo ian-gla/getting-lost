@@ -1,0 +1,20 @@
+#map {
+  height: 300px;
+}
+#checks {
+}
+.column {
+  float: left;
+  width: 50%;
+}
+.button {
+  height: 20px;
+  width: 50px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
