@@ -3,4 +3,6 @@
 # platform: osx-64
 streamlit
 psycopg2-binary
+pandas
+pydeck
 
