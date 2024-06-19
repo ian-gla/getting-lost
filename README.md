@@ -4,7 +4,7 @@ emoji: 🏃
 colorFrom: gray
 colorTo: gray
 sdk: streamlit
-sdk_version: 0.79.0
+sdk_version: 1.35.0
 app_file: app.py
 pinned: false
 ---
