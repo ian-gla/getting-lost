@@ -94,24 +94,24 @@ st.sidebar.title("Step 1 - Add Markers")
 col1, col2, col3 = st.sidebar.columns(3)
 
 with col1:
-    if st.button("Start", key="start-button"):
+    if st.button(":red[Start]", key="start-button", use_container_width=True):
         st.session_state['point_type'] = 'start'
         st.sidebar.markdown('<div class="start-button">Start</div>', unsafe_allow_html=True)
 
 with col2:
-    if st.button("Lost", key="lost-button"):
+    if st.button(":orange[Lost]", key="lost-button", use_container_width=True):
         st.session_state['point_type'] = 'lost'
         st.sidebar.markdown('<div class="lost-button">Lost</div>', unsafe_allow_html=True)
 
 with col3:
-    if st.button("End", key="end-button"):
+    if st.button(":blue[End]", key="end-button", use_container_width=True):
         st.session_state['point_type'] = 'end'
         st.sidebar.markdown('<div class="end-button">End</div>', unsafe_allow_html=True)
 
 st.sidebar.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")
 
 # Reset button
-if st.sidebar.button("Reset Markers", key="reset-button"):
+if st.sidebar.button(":red-background[:x: **Clear Markers**]", key="reset-button", use_container_width=True):
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
     st.rerun()
 
@@ -139,7 +139,7 @@ if all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button("Proceed to Survey :question:"):
         st.session_state['survey'] = True
 else:
-    st.sidebar.warning("Please add start, lost, and end points to proceed.")
+    st.sidebar.warning("Please add start, lost, and end points before proceeding to the survey questions.")
 st.sidebar.title("Step 2 - Survey Questions")
 
 if st.session_state['survey']:
