@@ -54,30 +54,24 @@ def submit_data(age, gender, transport, multi_transport, time_of_day, day_of_wee
         cursor.close()
         conn.close()
 
-# Sidebar form inputs
-st.sidebar.title("Getting Lost Survey")
-
-age = st.sidebar.selectbox("Age", ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"])
-gender = st.sidebar.radio("Gender", ["M", "F", "O", "PNTS"])
-transport = st.sidebar.radio("Mode of Transport", ["Walk", "Car", "Bike", "Train", "Other", "Multi"])
-
-multi_transport = []
-if transport == "Multi":
-    multi_transport = st.sidebar.multiselect("If Multi, Select Modes Used", ["Walk", "Car", "Bike", "Train", "Other"])
-
-time_of_day = st.sidebar.selectbox("Time of Day", ["Morning", "Afternoon", "Evening", "Night"])
-day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
-description = st.sidebar.text_area("Why did you get lost?")
-
-# Initialize points in session state
+# Initialize session state for points
 if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
 
-# Map interaction
-st.title("Select Points on the Map")
+# Sidebar for marker management
+st.sidebar.title("Step 1: Add Markers on the Map")
 
 # Selector for point type
-point_type = st.radio("Select Point Type to Add", ["start", "lost", "end"])
+point_type = st.sidebar.radio("Select Point Type to Add", ["start", "lost", "end"])
+
+# Buttons to clear points
+if st.sidebar.button("Clear All Markers"):
+    st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
+    st.experimental_rerun()
+
+if st.sidebar.button("Clear Selected Marker"):
+    st.session_state['points'][point_type] = None
+    st.experimental_rerun()
 
 # Initialize map
 m = folium.Map(location=[51.5074, -0.1278], zoom_start=10, control_scale=True)
@@ -120,6 +114,21 @@ if output and 'last_clicked' in output and output['last_clicked'] is not None:
 
 # Display current points
 st.write("Current Points:", st.session_state['points'])
+
+# Step 2: Survey questions
+st.sidebar.title("Step 2: Fill Out the Survey")
+
+age = st.sidebar.selectbox("Age", ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"])
+gender = st.sidebar.radio("Gender", ["M", "F", "O", "PNTS"])
+transport = st.sidebar.radio("Mode of Transport", ["Walk", "Car", "Bike", "Train", "Other", "Multi"])
+
+multi_transport = []
+if transport == "Multi":
+    multi_transport = st.sidebar.multiselect("If Multi, Select Modes Used", ["Walk", "Car", "Bike", "Train", "Other"])
+
+time_of_day = st.sidebar.selectbox("Time of Day", ["Morning", "Afternoon", "Evening", "Night"])
+day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+description = st.sidebar.text_area("Why did you get lost?")
 
 if st.sidebar.button("Save"):
     submit_data(age, gender, transport, multi_transport, time_of_day, day_of_week, description, st.session_state['points'])
