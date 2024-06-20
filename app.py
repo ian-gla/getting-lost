@@ -149,7 +149,7 @@ if st.session_state['survey']:
 # st.sidebar.write("Current Points:")
 # st.sidebar.json(st.session_state['points'])
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("For a more detailed survey, click the link or scan the QR code:")
-st.sidebar.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
-st.sidebar.image("static/Getting Lost Survey.png", width=200)
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("For a more detailed survey, click the link or scan the QR code:")
+    st.sidebar.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
+    st.sidebar.image("static/Getting Lost Survey.png", width=200)
