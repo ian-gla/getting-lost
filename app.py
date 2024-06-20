@@ -49,8 +49,10 @@ def submit_data(age, gender, transport, multi_transport, time_of_day, day_of_wee
         cursor.close()
         conn.close()
 
-def create_map(points):
-    m = folium.Map(location=[51.5074, -0.1278], zoom_start=10, control_scale=True)
+def create_map(points, center=None, zoom=10):
+    if center is None:
+        center = [51.5074, -0.1278]
+    m = folium.Map(location=center, zoom_start=zoom, control_scale=True)
     for point_type, coords in points.items():
         if coords:
             folium.Marker(
@@ -79,7 +81,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
+st.sidebar.image("static/UoG_keyline.png")
 st.sidebar.title("Step 1 - Add Markers")
 
 # Custom buttons for selecting point type
@@ -107,21 +109,30 @@ if st.sidebar.button("Reset Markers", key="reset-button"):
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
     st.experimental_rerun()
 
+# Initialize session state for map center and zoom level if not already done
+if 'map_center' not in st.session_state:
+    st.session_state['map_center'] = [51.5074, -0.1278]
+if 'map_zoom' not in st.session_state:
+    st.session_state['map_zoom'] = 10
+
 map_placeholder = st.empty()
 
 with map_placeholder.container():
-    folium_map = create_map(st.session_state['points'])
+    folium_map = create_map(st.session_state['points'], center=st.session_state['map_center'], zoom=st.session_state['map_zoom'])
     map_output = st_folium(folium_map, width="100%", height=800)
 
 new_coords = None
 if map_output and 'last_clicked' in map_output and map_output['last_clicked'] is not None:
     new_coords = (map_output['last_clicked']['lat'], map_output['last_clicked']['lng'])
+    # Update the map center to the last clicked location
+    st.session_state['map_center'] = [map_output['last_clicked']['lat'], map_output['last_clicked']['lng']]
+    st.session_state['map_zoom'] = map_output['zoom']
 
 if new_coords:
     st.session_state['points'][st.session_state['point_type']] = new_coords
     map_placeholder.empty()
     with map_placeholder.container():
-        folium_map = create_map(st.session_state['points'])
+        folium_map = create_map(st.session_state['points'], center=st.session_state['map_center'], zoom=st.session_state['map_zoom'])
         st_folium(folium_map, width="100%", height=800)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
