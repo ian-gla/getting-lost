@@ -39,7 +39,7 @@ def submit_data(age, gender, transport, multi_transport, time_of_day, day_of_wee
                 INSERT INTO public.gettinglost_geom (ID, PointType, geom) 
                 VALUES (%s, %s, ST_SetSRID(ST_Point(%s, %s), 4326));
                 """,
-                (record_id, pointType, point[0], point[1])
+                (record_id, pointType, point[1], point[0])
             )
 
         conn.commit()
