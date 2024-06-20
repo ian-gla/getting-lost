@@ -64,23 +64,17 @@ if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
 if 'survey' not in st.session_state:
     st.session_state['survey'] = False
+if 'point_type' not in st.session_state:
+    st.session_state['point_type'] = 'start'
 
 # Custom CSS for colored buttons
 st.markdown(
     """
     <style>
-    .marker-button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 5px;
-        cursor: pointer;
-        text-align: center;
-        color: white;
-    }
-    .start-button { background-color: red; }
-    .lost-button { background-color: orange; }
-    .end-button { background-color: blue; }
+    .start-button { background-color: red; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; }
+    .lost-button { background-color: orange; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; }
+    .end-button { background-color: blue; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; }
+    .reset-button { background-color: gray; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 5px; cursor: pointer; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -89,35 +83,46 @@ st.markdown(
 st.sidebar.title("Step 1 - Add Markers")
 
 # Custom buttons for selecting point type
-point_type = st.sidebar.radio(
-    "Select Point Type:",
-    ["start", "lost", "end"],
-    format_func=lambda x: x.capitalize()
-)
+col1, col2, col3 = st.sidebar.columns(3)
 
-if point_type == "start":
-    st.sidebar.markdown('<div class="marker-button start-button">Start</div>', unsafe_allow_html=True)
-elif point_type == "lost":
-    st.sidebar.markdown('<div class="marker-button lost-button">Lost</div>', unsafe_allow_html=True)
-elif point_type == "end":
-    st.sidebar.markdown('<div class="marker-button end-button">End</div>', unsafe_allow_html=True)
+with col1:
+    if st.button("Start", key="start-button"):
+        st.session_state['point_type'] = 'start'
+        st.sidebar.markdown('<div class="start-button">Start</div>', unsafe_allow_html=True)
+
+with col2:
+    if st.button("Lost", key="lost-button"):
+        st.session_state['point_type'] = 'lost'
+        st.sidebar.markdown('<div class="lost-button">Lost</div>', unsafe_allow_html=True)
+
+with col3:
+    if st.button("End", key="end-button"):
+        st.session_state['point_type'] = 'end'
+        st.sidebar.markdown('<div class="end-button">End</div>', unsafe_allow_html=True)
+
+st.sidebar.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")
+
+# Reset button
+if st.sidebar.button("Reset Markers", key="reset-button"):
+    st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
+    st.experimental_rerun()
 
 map_placeholder = st.empty()
 
 with map_placeholder.container():
     folium_map = create_map(st.session_state['points'])
-    map_output = st_folium(folium_map, width="100%", height=500)
+    map_output = st_folium(folium_map, width="100%", height=800)
 
 new_coords = None
 if map_output and 'last_clicked' in map_output and map_output['last_clicked'] is not None:
     new_coords = (map_output['last_clicked']['lat'], map_output['last_clicked']['lng'])
 
 if new_coords:
-    st.session_state['points'][point_type] = new_coords
+    st.session_state['points'][st.session_state['point_type']] = new_coords
     map_placeholder.empty()
     with map_placeholder.container():
         folium_map = create_map(st.session_state['points'])
-        st_folium(folium_map, width="100%", height=500)
+        st_folium(folium_map, width="100%", height=800)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button("Proceed to Survey"):
