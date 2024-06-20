@@ -5,7 +5,7 @@ import psycopg2
 
 st.set_page_config(layout="wide")
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def connect_to_db():
     return psycopg2.connect(
         dbname="glprui_jloddr",
@@ -62,12 +62,17 @@ def create_map(points, center=None, zoom=10):
             ).add_to(m)
     return m
 
+# Initialize session state for points if not already done
 if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
 if 'survey' not in st.session_state:
     st.session_state['survey'] = False
 if 'point_type' not in st.session_state:
     st.session_state['point_type'] = 'start'
+if 'map_center' not in st.session_state:
+    st.session_state['map_center'] = [51.5074, -0.1278]
+if 'map_zoom' not in st.session_state:
+    st.session_state['map_zoom'] = 10
 
 # Custom CSS for colored buttons
 st.markdown(
@@ -81,8 +86,9 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 st.sidebar.image("static/UoG_keyline.png")
-st.sidebar.title("Step 1 - Add Map Markers")
+st.sidebar.title("Step 1 - Add Markers")
 
 # Custom buttons for selecting point type
 col1, col2, col3 = st.sidebar.columns(3)
@@ -107,13 +113,7 @@ st.sidebar.write(f"Selected Point Type: {st.session_state['point_type'].capitali
 # Reset button
 if st.sidebar.button("Reset Markers", key="reset-button"):
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
-    st.experimental_rerun()
-
-# Initialize session state for map center and zoom level if not already done
-if 'map_center' not in st.session_state:
-    st.session_state['map_center'] = [51.5074, -0.1278]
-if 'map_zoom' not in st.session_state:
-    st.session_state['map_zoom'] = 10
+    st.rerun()
 
 map_placeholder = st.empty()
 
@@ -136,11 +136,10 @@ if new_coords:
         st_folium(folium_map, width="100%", height=800)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
-    if st.sidebar.button("Proceed to Survey"):
+    if st.sidebar.button("Proceed to Survey :question:"):
         st.session_state['survey'] = True
 else:
     st.sidebar.warning("Please add start, lost, and end points to proceed.")
-
 st.sidebar.title("Step 2 - Survey Questions")
 
 if st.session_state['survey']:
@@ -156,7 +155,7 @@ if st.session_state['survey']:
         submit_data(age, gender, transport, multi_transport, time_of_day, day_of_week, description, st.session_state['points'])
         st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
         st.session_state['survey'] = False
-        st.experimental_rerun()
+        st.rerun()
 
 # st.sidebar.write("Current Points:")
 # st.sidebar.json(st.session_state['points'])
