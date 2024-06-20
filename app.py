@@ -119,13 +119,13 @@ map_placeholder = st.empty()
 
 with map_placeholder.container():
     folium_map = create_map(st.session_state['points'], center=st.session_state['map_center'], zoom=st.session_state['map_zoom'])
-    map_output = st_folium(folium_map, width="100%", height=800)
+    map_output = st_folium(folium_map, width="100%", height=500)
 
 new_coords = None
 if map_output and 'last_clicked' in map_output and map_output['last_clicked'] is not None:
     new_coords = (map_output['last_clicked']['lat'], map_output['last_clicked']['lng'])
-    # Update the map center to the last clicked location
-    st.session_state['map_center'] = [map_output['last_clicked']['lat'], map_output['last_clicked']['lng']]
+    # Update the map center to the current view, ensuring it's a list
+    st.session_state['map_center'] = [map_output['center']['lat'], map_output['center']['lng']]
     st.session_state['map_zoom'] = map_output['zoom']
 
 if new_coords:
@@ -133,7 +133,7 @@ if new_coords:
     map_placeholder.empty()
     with map_placeholder.container():
         folium_map = create_map(st.session_state['points'], center=st.session_state['map_center'], zoom=st.session_state['map_zoom'])
-        st_folium(folium_map, width="100%", height=800)
+        st_folium(folium_map, width="100%", height=500)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button("Proceed to Survey"):
