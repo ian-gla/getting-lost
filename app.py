@@ -82,7 +82,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.sidebar.image("static/UoG_keyline.png")
-st.sidebar.title("Step 1 - Add Markers")
+st.sidebar.title("Step 1 - Add Map Markers")
 
 # Custom buttons for selecting point type
 col1, col2, col3 = st.sidebar.columns(3)
@@ -141,8 +141,9 @@ if all(st.session_state['points'].values()) and not st.session_state['survey']:
 else:
     st.sidebar.warning("Please add start, lost, and end points to proceed.")
 
+st.sidebar.title("Step 2 - Survey Questions")
+
 if st.session_state['survey']:
-    st.sidebar.title("Step 2 - Survey Questions")
     age = st.sidebar.selectbox("Age", list(range(10, 101, 10)))
     gender = st.sidebar.radio("Gender", ["Male", "Female", "Other", "Prefer not to say"])
     transport = st.sidebar.radio("Mode of Transport", ["Walk", "Car", "Bike", "Train", "Other", "Multi"])
