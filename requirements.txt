@@ -4,5 +4,6 @@
 streamlit
 psycopg2-binary
 pandas
-pydeck
+folium
+streamlit_folium
 

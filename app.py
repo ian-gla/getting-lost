@@ -1,7 +1,9 @@
 import streamlit as st
+import folium
+from streamlit_folium import st_folium
+from folium.plugins import Draw, Geocoder, MiniMap
 import psycopg2
 import pandas as pd
-import pydeck as pdk
 
 st.set_page_config(layout="wide")
 
@@ -67,55 +69,62 @@ time_of_day = st.sidebar.selectbox("Time of Day", ["Morning", "Afternoon", "Even
 day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 description = st.sidebar.text_area("Why did you get lost?")
 
-# Map interaction
-st.sidebar.title("Select Points on Map")
-point_type = st.sidebar.radio("Select Point Type", ["start", "lost", "end"])
-
+# Initialize points in session state
 if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
 
-def map_click(lat, lon):
+# Map interaction
+st.title("Select Points on the Map")
+
+# Selector for point type
+point_type = st.radio("Select Point Type to Add", ["start", "lost", "end"])
+
+# Initialize map
+m = folium.Map(location=[51.5074, -0.1278], zoom_start=10, control_scale=True)
+
+# Add existing points to the map
+for pointType, coords in st.session_state['points'].items():
+    if coords:
+        folium.Marker(
+            location=coords,
+            popup=pointType,
+            icon=folium.Icon(color="red" if pointType == "start" else "blue" if pointType == "end" else "orange")
+        ).add_to(m)
+
+# Add click functionality without creating popups
+draw = Draw(
+    export=False,
+    draw_options={
+        "circle": False,
+        "polyline": False,
+        "polygon": False,
+        "rectangle": False,
+        "circlemarker": False,
+        "marker": True,
+    },
+    edit_options={"edit": False}
+)
+draw.add_to(m)
+Geocoder(add_marker=True).add_to(m)
+MiniMap().add_to(m)
+
+# Display map
+output = st_folium(m, width="100%", height=600, key="map")
+
+# Check for map click data
+if output and 'last_clicked' in output and output['last_clicked'] is not None:
+    lat = output['last_clicked']['lat']
+    lon = output['last_clicked']['lng']
     st.session_state['points'][point_type] = (lat, lon)
+    st.experimental_rerun()
 
-st.sidebar.write("Click on the map to select points.")
+# Display current points
+st.write("Current Points:", st.session_state['points'])
 
-# Map display
-map_data = pd.DataFrame([
-    {'lat': st.session_state['points']['start'][0], 'lon': st.session_state['points']['start'][1]} if st.session_state['points']['start'] else {'lat': None, 'lon': None},
-    {'lat': st.session_state['points']['lost'][0], 'lon': st.session_state['points']['lost'][1]} if st.session_state['points']['lost'] else {'lat': None, 'lon': None},
-    {'lat': st.session_state['points']['end'][0], 'lon': st.session_state['points']['end'][1]} if st.session_state['points']['end'] else {'lat': None, 'lon': None}
-])
-
-map_data.dropna(inplace=True)
-
-layer = pdk.Layer(
-    'ScatterplotLayer',
-    data=map_data,
-    get_position='[lon, lat]',
-    get_color='[200, 30, 0, 160]',
-    get_radius=200,
-)
-
-view_state = pdk.ViewState(
-    latitude=map_data['lat'].mean() if not map_data.empty else 0,
-    longitude=map_data['lon'].mean() if not map_data.empty else 0,
-    zoom=10,
-    pitch=0,
-)
-
-r = pdk.Deck(
-    map_style='mapbox://styles/mapbox/light-v9',
-    layers=[layer],
-    initial_view_state=view_state,
-    tooltip={"text": "{pointType} point at {lat}, {lon}"}
-)
-
-st.pydeck_chart(r)
-
-if st.button("Save"):
+if st.sidebar.button("Save"):
     submit_data(age, gender, transport, multi_transport, time_of_day, day_of_week, description, st.session_state['points'])
 
-st.markdown("---")
-st.markdown("For a more detailed survey, click the link or scan the QR code:")
-st.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
-st.image("static/Getting Lost Survey.png", width=200)
+st.sidebar.markdown("---")
+st.sidebar.markdown("For a more detailed survey, click the link or scan the QR code:")
+st.sidebar.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
+st.sidebar.image("static/Getting Lost Survey.png", width=200)
