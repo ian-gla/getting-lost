@@ -96,17 +96,17 @@ col1, col2, col3 = st.sidebar.columns(3)
 with col1:
     if st.button(":red[Start]", key="start-button", help="Place a marker on the corresponding map location",  use_container_width=True):
         st.session_state['point_type'] = 'start'
-        st.sidebar.markdown('<div class="start-button">Start</div>', unsafe_allow_html=True)
+        st.sidebar.markdown('<div class="start-button">Start Point</div>', unsafe_allow_html=True)
 
 with col2:
     if st.button(":orange[Lost]", key="lost-button", help="Place a marker on the corresponding map location", use_container_width=True):
         st.session_state['point_type'] = 'lost'
-        st.sidebar.markdown('<div class="lost-button">Lost</div>', unsafe_allow_html=True)
+        st.sidebar.markdown('<div class="lost-button">Lost Point</div>', unsafe_allow_html=True)
 
 with col3:
     if st.button(":blue[End]", key="end-button", help="Place a marker on the corresponding map location",  use_container_width=True):
         st.session_state['point_type'] = 'end'
-        st.sidebar.markdown('<div class="end-button">End</div>', unsafe_allow_html=True)
+        st.sidebar.markdown('<div class="end-button">End Point</div>', unsafe_allow_html=True)
 
 st.sidebar.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")
 
