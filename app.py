@@ -1,5 +1,7 @@
 import streamlit as st
 import folium
+from folium import LayerControl
+from folium.plugins import Geocoder, MiniMap
 from streamlit_folium import st_folium
 import psycopg2
 
@@ -52,7 +54,26 @@ def submit_data(age, gender, transport, multi_transport, time_of_day, day_of_wee
 def create_map(points, center=None, zoom=10):
     if center is None:
         center = [51.5074, -0.1278]
-    m = folium.Map(location=center, zoom_start=zoom, control_scale=True)
+    m = folium.Map(location=center, zoom_start=zoom, control_scale=True,Tiles=None)
+    Geocoder().add_to(m)
+    MiniMap().add_to(m)
+    basemap_satellite_layer1 = folium.TileLayer(
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri",
+    name="ESRI Satellite",
+    overlay=False,
+    control=True
+    )
+    basemap_satellite_layer1.add_to(m)
+    OpenStreetMap_HOT = folium.TileLayer(
+    tiles="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+    attr="Humanitarian OpenStreetMap Team",
+    name="OpenStreetMap_HOT",
+    overlay=False,
+    control=True  
+    )
+    OpenStreetMap_HOT.add_to(m)
+    LayerControl().add_to(m)
     for point_type, coords in points.items():
         if coords:
             folium.Marker(
@@ -88,34 +109,35 @@ st.markdown(
 )
 
 st.sidebar.image("static/UoG_keyline.png")
-st.sidebar.title("Step 1 - Add Markers")
+st.title("Step 1 - Add Your :red[Start], :orange[Lost] and :blue[End] Markers on the Map")
 
 # Custom buttons for selecting point type
-col1, col2, col3 = st.sidebar.columns(3)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     if st.button(":red[Start]", key="start-button", help="Place a marker on the corresponding map location",  use_container_width=True):
         st.session_state['point_type'] = 'start'
-        st.sidebar.markdown('<div class="start-button">Start Point</div>', unsafe_allow_html=True)
+        st.markdown('<div class="start-button">Start Point</div>', unsafe_allow_html=True)
 
 with col2:
     if st.button(":orange[Lost]", key="lost-button", help="Place a marker on the corresponding map location", use_container_width=True):
         st.session_state['point_type'] = 'lost'
-        st.sidebar.markdown('<div class="lost-button">Lost Point</div>', unsafe_allow_html=True)
+        st.markdown('<div class="lost-button">Lost Point</div>', unsafe_allow_html=True)
 
 with col3:
     if st.button(":blue[End]", key="end-button", help="Place a marker on the corresponding map location",  use_container_width=True):
         st.session_state['point_type'] = 'end'
-        st.sidebar.markdown('<div class="end-button">End Point</div>', unsafe_allow_html=True)
+        st.markdown('<div class="end-button">End Point</div>', unsafe_allow_html=True)
 
-st.sidebar.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")
 
+# st.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")
 # Reset button
-if st.sidebar.button(":red-background[:x: **Clear Markers**]", key="reset-button", use_container_width=True):
+if st.button(":red-background[:x: **Clear Markers**]", key="reset-button", use_container_width=True):
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
     st.rerun()
 
 map_placeholder = st.empty()
+
 
 with map_placeholder.container():
     folium_map = create_map(st.session_state['points'], center=st.session_state['map_center'], zoom=st.session_state['map_zoom'])
@@ -136,11 +158,13 @@ if new_coords:
         st_folium(folium_map, width="100%", height=800)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
-    if st.sidebar.button("**Proceed to Survey** :question:", use_container_width=True):
+    if st.sidebar.button("**Proceed to Survey** :question:", use_container_width=True, key="sidebar"):
+        st.session_state['survey'] = True
+    if st.button("**Proceed to Survey** :question:", use_container_width=True, key="main"):
         st.session_state['survey'] = True
 else:
     st.sidebar.title("Step 2 - Survey Questions")
-    st.sidebar.warning("Please add start, lost, and end points before proceeding to the survey questions.")
+    st.sidebar.warning("Please add your start, lost, and end points before proceeding to the survey questions.")
 
 
 if st.session_state['survey']:
