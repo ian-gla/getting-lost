@@ -8,7 +8,7 @@ import pandas as pd
 st.set_page_config(layout="wide")
 
 # Database connection
-@st.cache(allow_output_mutation=True)
+@st.cache_resource
 def connect_to_db():
     return psycopg2.connect(
         dbname="glprui_jloddr",
@@ -57,6 +57,8 @@ def submit_data(age, gender, transport, multi_transport, time_of_day, day_of_wee
 # Initialize session state for points
 if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
+if 'step' not in st.session_state:
+    st.session_state['step'] = 1
 
 # Sidebar for marker management
 st.sidebar.title("Step 1: Add Markers on the Map")
@@ -67,73 +69,86 @@ point_type = st.sidebar.radio("Select Point Type to Add", ["start", "lost", "end
 # Buttons to clear points
 if st.sidebar.button("Clear All Markers"):
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
-    st.experimental_rerun()
+    st.rerun()
 
 if st.sidebar.button("Clear Selected Marker"):
     st.session_state['points'][point_type] = None
-    st.experimental_rerun()
+    st.rerun()
 
-# Initialize map
-m = folium.Map(location=[51.5074, -0.1278], zoom_start=10, control_scale=True)
+# Create a placeholder for the map
+map_placeholder = st.empty()
 
-# Add existing points to the map
-for pointType, coords in st.session_state['points'].items():
-    if coords:
-        folium.Marker(
-            location=coords,
-            popup=pointType,
-            icon=folium.Icon(color="red" if pointType == "start" else "blue" if pointType == "end" else "orange")
-        ).add_to(m)
+def create_map():
+    # Initialize map
+    m = folium.Map(location=[51.5074, -0.1278], zoom_start=10, control_scale=True)
 
-# Add click functionality without creating popups
-draw = Draw(
-    export=False,
-    draw_options={
-        "circle": False,
-        "polyline": False,
-        "polygon": False,
-        "rectangle": False,
-        "circlemarker": False,
-        "marker": True,
-    },
-    edit_options={"edit": False}
-)
-draw.add_to(m)
-Geocoder(add_marker=True).add_to(m)
-MiniMap().add_to(m)
+    # Add existing points to the map
+    for pointType, coords in st.session_state['points'].items():
+        if coords:
+            folium.Marker(
+                location=coords,
+                popup=pointType,
+                icon=folium.Icon(color="red" if pointType == "start" else "blue" if pointType == "end" else "orange")
+            ).add_to(m)
+
+    # Add click functionality without creating popups
+    draw = Draw(
+        export=False,
+        draw_options={
+            "circle": False,
+            "polyline": False,
+            "polygon": False,
+            "rectangle": False,
+            "circlemarker": False,
+            "marker": True,
+        },
+        edit_options={"edit": False}
+    )
+    draw.add_to(m)
+    Geocoder(add_marker=True).add_to(m)
+    MiniMap().add_to(m)
+
+    return m
 
 # Display map
-output = st_folium(m, width="100%", height=600, key="map")
+with map_placeholder.container():
+    output = st_folium(create_map(), width="100%", height=600, key="map")
 
 # Check for map click data
 if output and 'last_clicked' in output and output['last_clicked'] is not None:
     lat = output['last_clicked']['lat']
     lon = output['last_clicked']['lng']
     st.session_state['points'][point_type] = (lat, lon)
-    st.experimental_rerun()
+    st.rerun()
 
 # Display current points
 st.write("Current Points:", st.session_state['points'])
 
 # Step 2: Survey questions
-st.sidebar.title("Step 2: Fill Out the Survey")
+if st.session_state['step'] == 1:
+    if st.sidebar.button("Done Adding Markers"):
+        st.session_state['step'] = 2
+        st.rerun()
 
-age = st.sidebar.selectbox("Age", ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"])
-gender = st.sidebar.radio("Gender", ["M", "F", "O", "PNTS"])
-transport = st.sidebar.radio("Mode of Transport", ["Walk", "Car", "Bike", "Train", "Other", "Multi"])
+if st.session_state['step'] == 2:
+    st.sidebar.title("Step 2: Fill Out the Survey")
 
-multi_transport = []
-if transport == "Multi":
-    multi_transport = st.sidebar.multiselect("If Multi, Select Modes Used", ["Walk", "Car", "Bike", "Train", "Other"])
+    age = st.sidebar.selectbox("Age", ["0-10", "11-20", "21-30", "31-40", "41-50", "51-60", "61-70", "71-80", "81-90", "91-100"])
+    gender = st.sidebar.radio("Gender", ["M", "F", "O", "PNTS"])
+    transport = st.sidebar.radio("Mode of Transport", ["Walk", "Car", "Bike", "Train", "Other", "Multi"])
 
-time_of_day = st.sidebar.selectbox("Time of Day", ["Morning", "Afternoon", "Evening", "Night"])
-day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
-description = st.sidebar.text_area("Why did you get lost?")
+    multi_transport = []
+    if transport == "Multi":
+        multi_transport = st.sidebar.multiselect("If Multi, Select Modes Used", ["Walk", "Car", "Bike", "Train", "Other"])
 
-if st.sidebar.button("Save"):
-    submit_data(age, gender, transport, multi_transport, time_of_day, day_of_week, description, st.session_state['points'])
+    time_of_day = st.sidebar.selectbox("Time of Day", ["Morning", "Afternoon", "Evening", "Night"])
+    day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
+    description = st.sidebar.text_area("Why did you get lost?")
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("For a more detailed survey, click the link or scan the QR code:")
-st.sidebar.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
-st.sidebar.image("static/Getting Lost Survey.png", width=200)
+    if st.sidebar.button("Save"):
+        submit_data(age, gender, transport, multi_transport, time_of_day, day_of_week, description, st.session_state['points'])
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("For a more detailed survey, click the link or scan the QR code:")
+    st.sidebar.markdown("[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)")
+    st.sidebar.image("static/Getting Lost Survey.png", width=200)
