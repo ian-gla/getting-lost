@@ -167,17 +167,17 @@ else:
 if st.session_state['survey']:
     st.sidebar.title("Step 2 - Survey Questions")
     consent = st.sidebar.checkbox("I consent to participate in this survey.")
-    age = st.sidebar.selectbox("Age", ["10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70+"])
+    age = st.sidebar.selectbox("Age", ["18-25","25-35","35-45","45-55","55-65","65+"])
     gender = st.sidebar.selectbox("Gender", ["Male", "Female", "Other", "Prefer not to say"])
     other_transport = st.sidebar.multiselect("Did you use any other mode of transport during this journey?", ["Walk", "Car", "Bike", "Train", "Other"])
     time_of_day = st.sidebar.selectbox("Time of Day (2-hour window)", ["00:00-02:00", "02:00-04:00", "04:00-06:00", "06:00-08:00", "08:00-10:00", "10:00-12:00", "12:00-14:00", "14:00-16:00", "16:00-18:00", "18:00-20:00", "20:00-22:00", "22:00-24:00"])
     day_of_week = st.sidebar.selectbox("Day of the Week", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
-    familiarity = st.sidebar.radio("Familiarity (1-5, with 1 being not familiar with the area and 5 being very familiar with the area)", [1, 2, 3, 4, 5])
+    familiarity = st.sidebar.radio("Familiarity (1-5, with 1 being not familiar with the area and 5 being very familiar with the area)", [1, 2, 3, 4, 5],horizontal=True)
     route_guidance = st.sidebar.selectbox("Main method of route guidance", ["GPS/sat nav (e.g. Google maps, Citymapper, etc)", "Paper map", "Someone else’s directions (in group)", "Someone else’s directions (not in group)", "Street signs", "I was just wandering"])
     group = st.sidebar.radio("Walking in group?", ["Yes", "No"])
-    navigation_ease = st.sidebar.radio("How easy do you typically find navigating whilst walking in cities (independent of this event)? [1-5]", [1, 2, 3, 4, 5])
-    personal_context = st.sidebar.text_area("Personal context regarding why you got lost")
-    lost_factors = st.sidebar.text_area("Ranking important factors for getting lost (e.g. environment, street layout, number of people, busy streets, complex roadsigns)")
+    navigation_ease = st.sidebar.radio("How easy do you typically find navigating whilst walking in cities (independent of this event)? [1-5]", [1, 2, 3, 4, 5],horizontal=True)
+    personal_context = st.sidebar.text_area("Please describe the context in which you got lost in your own words")
+    lost_factors = st.sidebar.multiselect("Ranking important factors for getting lost", ["environment", "street layout", "number of people", "busy streets", "complex roadsigns"], help="Please select in yoor order of significance")
     open_ended_explanation = st.sidebar.text_area("Open-ended explanation of why you got lost")
 
     if st.sidebar.button("Save"):
