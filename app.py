@@ -1,6 +1,5 @@
 import streamlit as st
 import folium
-from folium import LayerControl
 from folium.plugins import Geocoder, MiniMap
 from streamlit_folium import st_folium
 import psycopg2
@@ -71,15 +70,6 @@ def create_map(points, center=None, zoom=10):
     m = folium.Map(location=center, zoom_start=zoom, control_scale=True, Tiles=None)
     Geocoder().add_to(m)
     MiniMap().add_to(m)
-    basemap_satellite_layer1 = folium.TileLayer(
-        tiles='https://server.arcgisonline.com/ArcGIS/rest/services'
-        '/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attr='Esri',
-        name='ESRI Satellite',
-        overlay=False,
-        control=True,
-    )
-    basemap_satellite_layer1.add_to(m)
     OpenStreetMap_HOT = folium.TileLayer(
         tiles='https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         attr='Humanitarian OpenStreetMap Team',
@@ -88,7 +78,6 @@ def create_map(points, center=None, zoom=10):
         control=True,
     )
     OpenStreetMap_HOT.add_to(m)
-    LayerControl().add_to(m)
     for point_type, coords in points.items():
         if coords:
             folium.Marker(
@@ -101,6 +90,7 @@ def create_map(points, center=None, zoom=10):
                     if point_type == 'end'
                     else 'orange'
                 ),
+                draggable=True,
             ).add_to(m)
     return m
 
@@ -137,7 +127,13 @@ st.markdown(
 
 st.sidebar.image('static/UoG_keyline.png')
 st.title('Step 1 - Add Your :red[Start], :orange[Lost] and :blue[End] Markers on the Map')
-
+st.markdown("""
+            Please mark on the map roughly where you were coming from and going to
+            and where you got lost.  You can drag the flags to the position you want,
+            if necessary zoom in and move them again.
+            Then check as many of the reasons on the right for getting lost as apply.
+            Finally, please click the submit button to send us your information.
+            """)
 # Custom buttons for selecting point type
 col1, col2, col3 = st.columns(3)
 
@@ -211,7 +207,7 @@ if new_coords:
             center=st.session_state['map_center'],
             zoom=st.session_state['map_zoom'],
         )
-        st_folium(folium_map, width='100%', height=800)
+        st_folium(folium_map, width='100%', height=500)
 
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button(
@@ -262,11 +258,3 @@ if st.session_state['survey']:
         st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
         st.session_state['survey'] = False
         st.rerun()
-
-    # st.sidebar.write("Current Points:")
-    # st.sidebar.json(st.session_state['points'])
-
-    st.sidebar.markdown('---')
-    st.sidebar.markdown('For a more detailed survey, click the link or scan the QR code:')
-    st.sidebar.markdown('[https://arcg.is/1GK5jP0](https://arcg.is/1GK5jP0)')
-    st.sidebar.image('static/Getting Lost Survey.png', width=200)
