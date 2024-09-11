@@ -1,2 +1,6 @@
 [theme]
 base="dark"
+
+[secrets]
+
+files = [ "~/.streamlit/secrets.toml", "~/code/gla/gettinglost-streamlit/website/.streamlit/secrets.toml"]

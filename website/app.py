@@ -11,12 +11,12 @@ st.set_page_config(layout='wide')
 @st.cache_resource
 def connect_to_db():
     return psycopg2.connect(
-        dbname='glprui_jloddr',
-        user='glprui_jloddr',
-        password='612ef773',
-        host='db.qgiscloud.com',
-        port='5432',
-        sslmode='prefer',
+        dbname=st.secrets["dbname"],
+        user=st.secrets["user"],
+        password=st.secrets['password'],
+        host=st.secrets["host"],
+        port=st.secrets['port'],
+        sslmode=st.secrets['sslmode'],
     )
 
 
