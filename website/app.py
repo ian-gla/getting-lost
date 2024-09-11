@@ -11,10 +11,10 @@ st.set_page_config(layout='wide')
 @st.cache_resource
 def connect_to_db():
     return psycopg2.connect(
-        dbname=st.secrets["dbname"],
-        user=st.secrets["user"],
+        dbname=st.secrets['dbname'],
+        user=st.secrets['user'],
         password=st.secrets['password'],
-        host=st.secrets["host"],
+        host=st.secrets['host'],
         port=st.secrets['port'],
         sslmode=st.secrets['sslmode'],
     )
@@ -126,7 +126,11 @@ st.markdown(
 )
 
 st.sidebar.image('static/UoG_keyline.png')
-st.title('Step 1 - Add Your :red[Start], :orange[Lost] and :blue[End] Markers on the Map')
+st.title(
+    'Step 1 - Add markers that show your :red[last known position], '
+    'where :orange[you got lost] and '
+    'where :blue[you next knew where you were] on the Map'
+)
 st.markdown("""
             Please mark on the map roughly where you were coming from and going to
             and where you got lost.  You can drag the flags to the position you want,
@@ -139,33 +143,38 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     if st.button(
-        ':red[Start]',
+        ':red[Last known position]',
         key='start-button',
         help='Place a marker on the corresponding map location',
         use_container_width=True,
     ):
         st.session_state['point_type'] = 'start'
-        st.markdown('<div class="start-button">Start Point</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="start-button">Last known position Point</div>', unsafe_allow_html=True
+        )
 
 with col2:
     if st.button(
-        ':orange[Lost]',
+        ':orange[Where you got lost]',
         key='lost-button',
         help='Place a marker on the corresponding map location',
         use_container_width=True,
     ):
         st.session_state['point_type'] = 'lost'
-        st.markdown('<div class="lost-button">Lost Point</div>', unsafe_allow_html=True)
+        st.markdown('<div class="lost-button">Where you got lost</div>', unsafe_allow_html=True)
 
 with col3:
     if st.button(
-        ':blue[End]',
+        ':blue[Where you next knew where you where]',
         key='end-button',
         help='Place a marker on the corresponding map location',
         use_container_width=True,
     ):
         st.session_state['point_type'] = 'end'
-        st.markdown('<div class="end-button">End Point</div>', unsafe_allow_html=True)
+        st.markdown(
+            '<div class="end-button">Where you next knew where you were</div>',
+            unsafe_allow_html=True,
+        )
 
 
 # st.write(f"Selected Point Type: {st.session_state['point_type'].capitalize()}")

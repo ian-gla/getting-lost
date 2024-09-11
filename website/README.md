@@ -6,7 +6,6 @@ colorTo: gray
 sdk: streamlit
 sdk_version: 1.35.0
 app_file: app.py
-pinned: false
 ---
 
 To run the app you need to provide a secrets file that contains information to connect to the database, it can 
