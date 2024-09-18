@@ -2,6 +2,7 @@ import streamlit as st
 import folium
 from folium.plugins import Geocoder, MiniMap
 from streamlit_folium import st_folium
+from streamlit_js_eval import get_geolocation
 import psycopg2
 
 
@@ -64,9 +65,14 @@ def submit_data(
         conn.close()
 
 
-def create_map(points, center=None, zoom=10):
-    if center is None:
-        center = [51.5074, -0.1278]
+def create_map(points, center=None, zoom=12):
+    if not center:
+        loc = get_geolocation()
+        if loc:
+            center = [loc['coords']['latitude'], loc['coords']['longitude']]
+        else:
+            center = [55.87245110807691, -4.290001402160369]
+
     m = folium.Map(location=center, zoom_start=zoom, control_scale=True, Tiles=None)
     Geocoder().add_to(m)
     MiniMap().add_to(m)
@@ -90,11 +96,17 @@ def create_map(points, center=None, zoom=10):
                     if point_type == 'end'
                     else 'orange'
                 ),
+                tooltip='Where you began'
+                if point_type == 'start'
+                else 'Where you next knew where your where'
+                if point_type == 'end'
+                else 'Where you got lost',
                 draggable=True,
             ).add_to(m)
     return m
 
 
+# Main code - loop?
 # Initialize session state for points if not already done
 if 'points' not in st.session_state:
     st.session_state['points'] = {'start': None, 'lost': None, 'end': None}
@@ -103,7 +115,7 @@ if 'survey' not in st.session_state:
 if 'point_type' not in st.session_state:
     st.session_state['point_type'] = 'start'
 if 'map_center' not in st.session_state:
-    st.session_state['map_center'] = [51.5074, -0.1278]
+    st.session_state['map_center'] = None
 if 'map_zoom' not in st.session_state:
     st.session_state['map_zoom'] = 10
 
@@ -218,6 +230,7 @@ if new_coords:
         )
         st_folium(folium_map, width='100%', height=500)
 
+# check if there are 3 points on the map - if there are set `survey` true
 if all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button(
         '**Proceed to Survey** :question:', use_container_width=True, key='sidebar'
@@ -231,8 +244,9 @@ else:
         'Please add your start, lost, and end points before proceeding to the survey questions.'
     )
 
-
+# 3 markers are placed on the map in a valid configuration
 if st.session_state['survey']:
+    # TODO remove clear markers button, lock locations?
     st.sidebar.title('Step 2 - Survey Questions')
     age = st.sidebar.selectbox('Age', ['18-25', '25-35', '35-45', '45-55', '55-65', '65+'])
     gender = st.sidebar.radio('Gender', ['Male', 'Female', 'Other', 'Prefer not to say'])
