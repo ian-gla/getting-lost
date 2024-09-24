@@ -83,7 +83,9 @@ var data_entry = document.querySelector('#data-entry-panel');
 checks.style.visibility = 'hidden';
 data_entry.style.visibility = 'hidden';
 var map = L.map("map").setView([51.505, -0.09], 13);
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+tiles = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+L.tileLayer(tiles, {
   maxZoom: 19,
   attribution:
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
