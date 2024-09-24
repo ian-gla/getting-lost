@@ -4,6 +4,7 @@ from folium.plugins import Geocoder, MiniMap
 from streamlit_folium import st_folium
 from streamlit_js_eval import get_geolocation
 import psycopg2
+from geopy import distance
 
 
 st.set_page_config(layout='wide')
@@ -65,7 +66,7 @@ def submit_data(
         conn.close()
 
 
-def create_map(points, center=None, zoom=12):
+def create_map(points, center=None, zoom=14):
     if not center:
         loc = get_geolocation()
         if loc:
@@ -117,7 +118,9 @@ if 'point_type' not in st.session_state:
 if 'map_center' not in st.session_state:
     st.session_state['map_center'] = None
 if 'map_zoom' not in st.session_state:
-    st.session_state['map_zoom'] = 10
+    st.session_state['map_zoom'] = 14
+if 'pts_valid' not in st.session_state:
+    st.session_state['pts_valid'] = False
 
 # Custom CSS for colored buttons
 st.markdown(
@@ -207,7 +210,9 @@ with map_placeholder.container():
         center=st.session_state['map_center'],
         zoom=st.session_state['map_zoom'],
     )
-    map_output = st_folium(folium_map, width='100%', height=800)
+    map_output = st_folium(folium_map, width='100%', height=500)
+    print(f"{folium_map=}")
+    print(f"{map_output=}")
 
 new_coords = None
 if map_output and 'last_clicked' in map_output and map_output['last_clicked'] is not None:
@@ -221,6 +226,7 @@ if map_output and 'last_clicked' in map_output and map_output['last_clicked'] is
 
 if new_coords:
     st.session_state['points'][st.session_state['point_type']] = new_coords
+    # why are we remaking the map here? - see https://github.com/GDSGlasgow/getting-lost/issues/17
     map_placeholder.empty()
     with map_placeholder.container():
         folium_map = create_map(
@@ -231,7 +237,25 @@ if new_coords:
         st_folium(folium_map, width='100%', height=500)
 
 # check if there are 3 points on the map - if there are set `survey` true
-if all(st.session_state['points'].values()) and not st.session_state['survey']:
+if all(st.session_state['points'].values()) and not st.session_state['pts_valid']:
+    for pointType, point in st.session_state['points'].items():
+        print(f"{pointType=}")
+        if 'start' == pointType:
+            start = point
+        if 'end' == pointType:
+            end = point
+        if 'lost' == pointType:
+            lost = point
+    d1 = distance.distance(start, lost).m
+    d2 = distance.distance(end, lost).m
+    print(f"{d1=} {d2=}")
+    if d1 < 1000 and d2 < 1000:
+        st.session_state['pts_valid'] = True
+    else:
+        print("Too far apart")
+
+
+elif all(st.session_state['points'].values()) and not st.session_state['survey']:
     if st.sidebar.button(
         '**Proceed to Survey** :question:', use_container_width=True, key='sidebar'
     ):
