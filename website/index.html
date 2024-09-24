@@ -1,0 +1,64 @@
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css" />
+  <link rel='stylesheet' href='./style.css'/>
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-geosearch@latest/dist/bundle.min.js"></script>
+</head>
+
+<body>
+  <div id='mapbox'>
+    <div id="map"></div>
+    <div id="buttonBar"></div>
+    <div id='checks'></div>
+
+    <div id="info">
+      <h1>Getting Lost</h1>
+      <p>Please mark on the map roughly where you were coming from and going to and where you got lost. You can drag the flags to the position you want, if necessary zoom in and move them again. Then check as many of the reasons on the right for getting lost as apply. Finally, please click the submit button to send us your information.
+    </div>
+    <div id="data-entry-panel">
+      <p>Please tell us a little about your self:</p>
+        <form id="data-entry-form">
+            <label for="age">Age:</label>
+            <select id="age">
+                <option value="11-20">11-20</option>
+                <option value="21-40">21-40</option>
+                <option value="41-60">41-60</option>
+                <option value="61+">61+</option>
+                <option value='na'>Prefer not to say</option>
+            </select>
+
+            <label for="gender">Gender:</label>
+            <select id="gender">
+                <option value="F">Female</option>
+                <option value="M">Male</option>
+                <option value="O">Other</option>
+                <option value="PNTS">Prefer Not To Say</option>
+            </select>
+
+            <label for="timeOfDay">Time Of Day:</label>
+            <select id="timeOfDay">
+                <option value="Morning">Morning</option>
+                <option value="Afternoon">Afternoon</option>
+                <option value="Evening">Evening</option>
+                <option value="Night">Night</option>
+            </select>
+
+            <label for="dayOfWeek">Which day of the week?:</label>
+            <select id="dayOfWeek">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+
+            <hr style="margin-top: 15px;">
+            <button type="button" onclick="changeView()">Next</button>
+            </div>
+  </div>
+  <script src='./script.js'></script>
+</body>

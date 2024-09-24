@@ -1,0 +1,58 @@
+#map {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  zindex: 0;
+}
+#buttonBar {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 300px;
+  background-color: #f8f8f8;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  z-index: 2000;
+}
+
+#data-entry-panel label,
+#data-entry-panel select,
+#data-entry-panel textarea {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+}
+#checks, #info, #data-entry-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 300px;
+  background-color: #f8f8f8;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  z-index: 1000;
+}
+.column {
+  float: left;
+  width: 50%;
+}
+.button {
+  height: 20px;
+  width: 50px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+}
