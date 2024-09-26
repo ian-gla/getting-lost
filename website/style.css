@@ -18,14 +18,14 @@
   z-index: 2000;
 }
 
-#data-entry-panel label,
-#data-entry-panel select,
-#data-entry-panel textarea {
+.data-panel label,
+.data-panel select,
+.data-panel textarea {
             display: block;
             margin-bottom: 10px;
             width: 100%;
 }
-#checks, #info, #data-entry-panel {
+#checks, #info, .data-panel {
   position: absolute;
   top: 10px;
   right: 10px;

@@ -1,50 +1,3 @@
-function createList(div) {
-  const reasons = {
-    pedestrian: "Pedestrian Flows",
-    transport: "Transport Flows",
-    visibility: "Visibility",
-    orientation: "Self Orientation Skills",
-    context: "Personal Context",
-    amap: "Access to Reliable Map",
-    familiarity: "Familiaraty",
-    names: "Name Similarity"
-  };
-  var ul = document.createElement("ul");
-  for (const [key, value] of Object.entries(reasons)) {
-    //  generate id
-    const id = key;
-
-    // create a label
-    const label = document.createElement("label");
-    label.setAttribute("for", id);
-
-    // create a checkbox
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.name = "reason";
-    checkbox.value = key;
-    checkbox.id = id;
-
-    // place the checkbox inside a label
-    label.appendChild(checkbox);
-    // create text node
-    label.appendChild(document.createTextNode(value));
-    // add the label to the root
-    li = document.createElement("li");
-    li.appendChild(label);
-    ul.appendChild(li);
-  }
-  var target = document.querySelector("#" + div);
-  target.appendChild(ul);
-
-  ta = document.createElement("TEXTAREA");
-
-  //ta.cols = 40;
-  //ta.rows = 10;
-  ta.placeholder = "Any other information";
-  target.appendChild(ta);
-  target.style.visibility='hidden';
-}
 
 var labels = {};
 var names = {};
@@ -54,7 +7,6 @@ labels["end"] = "Next known pos";
 for (key in labels) {
   names[labels[key]] = key;
 }
-
 function createButtons(div) {
   var target = document.querySelector("#" + div);
   var startB = document.createElement("button");
@@ -77,11 +29,11 @@ function createButtons(div) {
 function clicked(e) {
   addMarker(e.target.innerHTML);
 }
-var checks = document.querySelector("#checks");
 var info = document.querySelector("#info");
 var data_entry = document.querySelector('#data-entry-panel');
-checks.style.visibility = 'hidden';
+var data2_entry = document.querySelector('#more-data');
 data_entry.style.visibility = 'hidden';
+data2_entry.style.visibility = 'hidden';
 var map = L.map("map").setView([51.505, -0.09], 13);
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 tiles = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
@@ -95,7 +47,14 @@ const search = new GeoSearch.GeoSearchControl({
 });
 
 map.addControl(search);
-createList("checks");
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(position) {
+    latit = position.coords.latitude;
+    longit = position.coords.longitude;
+    // move the map to have the location in its center
+    map.panTo(new L.LatLng(latit, longit));
+});
+}
 createButtons("buttonBar");
 createSubmit("checks");
 var positions = {};
@@ -149,7 +108,7 @@ function displayChecks(){
     data_entry.style.visibility='visible';
 }
 function changeView(){
-    checks.style.visibility='visible';
+    data2_entry.style.visibility='visible';
     data_entry.style.visibility='hidden';
 }
 
@@ -203,3 +162,4 @@ function createSubmit(div) {
   startEl.onclick = submit;
   target.appendChild(startEl);
 }
+
