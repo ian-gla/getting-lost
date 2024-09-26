@@ -1,4 +1,9 @@
 
+var max_dist = 1; // distance in kn points must be within
+var min_dist = 0; // distance in kn points must be beyond
+var max_angle = 90; // max angle between segments
+var pointsGood = false;
+var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
 var names = {};
 labels["start"] = "Last known pos";
@@ -34,7 +39,7 @@ var data_entry = document.querySelector('#data-entry-panel');
 var data2_entry = document.querySelector('#more-data');
 data_entry.style.visibility = 'hidden';
 data2_entry.style.visibility = 'hidden';
-var map = L.map("map").setView([51.505, -0.09], 13);
+var map = L.map("map").setView(center, 13);
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 tiles = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
 L.tileLayer(tiles, {
@@ -52,7 +57,9 @@ if (navigator.geolocation) {
     latit = position.coords.latitude;
     longit = position.coords.longitude;
     // move the map to have the location in its center
+    center = [latit, longit];
     map.panTo(new L.LatLng(latit, longit));
+    positions = {};
 });
 }
 createButtons("buttonBar");
@@ -81,12 +88,16 @@ function addMarker(name) {
       draggable: true,
       autoPan: true
     }).addTo(map);
+    marker.on('dragend', pointsValid )
     positions[names[name]] = marker;
   } else {
     map.panTo(positions[names[name]].getLatLng());
   }
   if(Object.values(positions).length == 3){
-    displayChecks();
+    pointsValid();
+    if(pointsGood){
+      displayChecks();
+    }
   }
 }
 
@@ -112,6 +123,51 @@ function changeView(){
     data_entry.style.visibility='hidden';
 }
 
+function pointsValid() {
+  if(Object.values(positions).length != 3){
+    return;
+  }
+  var startPos = positions["start"] ? positions["start"].getLatLng() : "";
+  var endPos = positions["end"] ? positions["end"].getLatLng() : "";
+  var lostPos = positions["lost"] ? positions["lost"].getLatLng() : "";
+  var from = turf.point([startPos.lng, startPos.lat]);
+  var to = turf.point([endPos.lng, endPos.lat]);
+  var lost = turf.point([lostPos.lng, lostPos.lat]);
+  var options = {units: "kilometers"}
+
+  var distance1 = turf.distance(from, lost, options);
+  var distance2 = turf.distance(to, lost, options);
+  var angle = turf.angle(from, lost, to);
+  
+  var too_short = true;
+  var too_long = true;
+  var too_wide = true;
+  var message = "";
+  if (distance1 < max_dist && distance2 < max_dist){
+    too_long = false;
+  } else {
+    message += "Your points are too far apart, please adjust them.\n";
+  }
+  if (distance1 > min_dist && distance2 > min_dist){
+    too_short = false;
+  } else {
+    message += "Your points are too close together, please adjust them.\n";
+  }
+  if (angle < max_angle){
+    too_wide = false;
+  } else {
+    message += "The angle "+angle+": between your points is too wide, please adjust them.\n";
+  }
+
+
+  if (too_long || too_short || too_wide){
+    pointsGood = false;
+    alert(message);
+  } else {
+    pointsGood = true;
+  }
+
+}
 function submit() {
   var startPos = positions["start"] ? positions["start"].getLatLng() : "";
   var endPos = positions["end"] ? positions["end"].getLatLng() : "";
