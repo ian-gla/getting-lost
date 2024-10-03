@@ -34,18 +34,20 @@ function createButtons(div) {
 function clicked(e) {
   addMarker(e.target.innerHTML);
 }
+var buttons = document.querySelector("#buttonBar");
 var info = document.querySelector("#info");
 var data_entry = document.querySelector('#data-entry-panel');
 var data2_entry = document.querySelector('#more-data');
-data_entry.style.visibility = 'hidden';
-data2_entry.style.visibility = 'hidden';
+
+data_entry.style.display = 'none';
+data2_entry.style.display = 'none';
 var map = L.map("map").setView(center, 13);
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 tiles = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
 L.tileLayer(tiles, {
   maxZoom: 19,
   attribution:
-    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 const search = new GeoSearch.GeoSearchControl({
   provider: new GeoSearch.OpenStreetMapProvider()
@@ -60,19 +62,21 @@ if (navigator.geolocation) {
     center = [latit, longit];
     map.panTo(new L.LatLng(latit, longit));
     positions = {};
-});
+  });
 }
+
+L.control.scale({"position":"bottomright"}).addTo(map);
+
 createButtons("buttonBar");
-createSubmit("checks");
 var positions = {};
 function addMarker(name) {
   const colors = {
     start:
-      "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png",
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png",
     end:
-      "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png",
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png",
     lost:
-      "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png"
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png"
   };
 
   if (!positions[names[name]]) {
@@ -101,13 +105,14 @@ function addMarker(name) {
   }
 }
 
-function reset(){ 
-    info.style.visibility='visible';
-    checks.style.visibility='hidden';
-    data_entry.style.visibility='hidden';
+function cleanup(){ 
+  info.style.display='block';
+  buttons.style.display = 'block';
+  data_entry.style.display='none';
+  data2_entry.style.display='none';
   var n = ['start', 'lost', 'end'];
   for(const m of n){
-    console.log(m)
+    console.log("got marker: ",m)
     console.log(positions[m])
     map.removeLayer(positions[m]);
   }
@@ -115,16 +120,20 @@ function reset(){
 
 }
 function displayChecks(){
-    info.style.visibility='hidden';
-    data_entry.style.visibility='visible';
+  console.log("info off, data 1 on")
+  buttons.style.display = 'none';
+  info.style.display='none';
+  data_entry.style.display='block';
 }
 function changeView(){
-    data2_entry.style.visibility='visible';
-    data_entry.style.visibility='hidden';
+  data2_entry.style.display='block';
+  data_entry.style.display='none';
 }
 
 function pointsValid() {
+  console.log("points check")
   if(Object.values(positions).length != 3){
+    console.log("not enough points in check")
     return;
   }
   var startPos = positions["start"] ? positions["start"].getLatLng() : "";
@@ -138,7 +147,11 @@ function pointsValid() {
   var distance1 = turf.distance(from, lost, options);
   var distance2 = turf.distance(to, lost, options);
   var angle = turf.angle(from, lost, to);
-  
+  console.log("before: ",angle);
+  if(angle > 180){
+    angle=360 - angle;
+  }
+  console.log(angle);
   var too_short = true;
   var too_long = true;
   var too_wide = true;
@@ -165,10 +178,11 @@ function pointsValid() {
     alert(message);
   } else {
     pointsGood = true;
+    displayChecks();
   }
 
 }
-function submit() {
+function collectData() {
   var startPos = positions["start"] ? positions["start"].getLatLng() : "";
   var endPos = positions["end"] ? positions["end"].getLatLng() : "";
   var lostPos = positions["lost"] ? positions["lost"].getLatLng() : "";
@@ -181,19 +195,16 @@ function submit() {
   for(var i=0;i<s.length;i++){
     res[s[i].id] = s[i].options[s[i].selectedIndex].value;
   }
-  boxes = getCheckedBoxes("reason");
-  var reasons = [];
-  if (boxes) {
-    for (const box of boxes) {
-      reasons.push(box.value);
-    }
+  s= data2_entry.getElementsByTagName('select');
+  for(var i=0;i<s.length;i++){
+    res[s[i].id] = s[i].options[s[i].selectedIndex].value;
   }
-  res["reasons"] = reasons;
-  if (ta.value) {
-    res["text"] = ta.value;
+  s= data2_entry.getElementsByTagName('textarea');
+  for(var i=0;i<s.length;i++){
+    res[s[i].id] = s[i].value;
   }
   alert(JSON.stringify(res));
-  reset();
+  cleanup();
 }
 
 function getCheckedBoxes(chkboxName) {
@@ -215,7 +226,7 @@ function createSubmit(div) {
   var startEl = document.createElement("button");
   startEl.innerHTML = "submit";
   startEl.class = "button";
-  startEl.onclick = submit;
+  startEl.onclick = collectData;
   target.appendChild(startEl);
 }
 

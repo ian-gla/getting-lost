@@ -7,12 +7,12 @@
   zindex: 0;
 }
 #buttonBar {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 300px;
+  position: relative;
+  //top 10px;
+  //right 10px;
+  width: 100%;
   background-color: #f8f8f8;
-  padding: 15px;
+  // padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
   z-index: 2000;
@@ -25,31 +25,42 @@
             margin-bottom: 10px;
             width: 100%;
 }
-#checks, #info, .data-panel {
+#sidebar {
   position: absolute;
-  top: 10px;
+  top: 30px;
   right: 10px;
+  bottom: 100px;
   width: 300px;
+  overflow: auto;
   background-color: #f8f8f8;
-  padding: 15px;
+  border: 1px solid #000000;
+  z-index: 1900;
+
+}
+
+.resizable-content {
+  min-height: 30px;
+  min-width: 30px;
+  resize: both;
+  overflow: auto;
+  max-height: fit-content;
+  max-width: fit-content;
+}
+
+#checks, #info, .data-panel {
+  position: relative;
+  //top: 30px;
+  //right: 10px;
+  width: 100%;
+  background-color: #f8f8f8;
+  margin-bottom: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
   z-index: 1000;
 }
-.column {
-  float: left;
-  width: 50%;
-}
 .button {
   height: 20px;
   width: 50px;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
 }
 
 textarea {

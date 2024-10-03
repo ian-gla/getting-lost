@@ -11,13 +11,13 @@
 <body>
   <div id='mapbox'>
     <div id="map"></div>
-    <div id="buttonBar"></div>
-    <div id='checks'></div>
 
+    <div class='resizeable-content' id='sidebar'>
     <div id="info">
       <h1>Getting Lost</h1>
       <p>Please mark on the map roughly where you were coming from and going to and where you got lost. You can drag the flags to the position you want, if necessary zoom in and move them again. Then check as many of the reasons on the right for getting lost as apply. Finally, please click the submit button to send us your information.
     </div>
+    <div id='buttonBar'></div>
     <div class="data-panel" id="data-entry-panel">
       <p>Please tell us a little about your self:</p>
       <form id="data-entry-form">
@@ -117,7 +117,7 @@
         <label for="explain">Open-ended explanation of why you got lost</label>
         <textarea id="explain"></textarea>
         <hr style="margin-top: 15px;">
-        <button type="button" onclick="submit()">Save</button>
+        <button type="button" onclick="collectData()">Save</button>
       </form>
 
     </div>
