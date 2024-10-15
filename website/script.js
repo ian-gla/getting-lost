@@ -41,7 +41,7 @@ var data2_entry = document.querySelector('#more-data');
 
 data_entry.style.display = 'none';
 data2_entry.style.display = 'none';
-var map = L.map("map").setView(center, 13);
+var map = L.map("map").setView(center, 17);
 tiles = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 tiles = "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
 L.tileLayer(tiles, {
