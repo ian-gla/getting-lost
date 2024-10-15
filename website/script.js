@@ -1,7 +1,7 @@
 
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
-var max_angle = 90; // max angle between segments
+var min_angle = 90; // max angle between segments
 var pointsGood = false;
 var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
@@ -166,7 +166,7 @@ function pointsValid() {
   } else {
     message += "Your points are too close together, please adjust them.\n";
   }
-  if (angle < max_angle){
+  if (angle < min_angle){
     too_wide = false;
   } else {
     message += "The angle "+angle+": between your points is too wide, please adjust them.\n";
