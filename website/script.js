@@ -6,6 +6,7 @@ var pointsGood = false;
 var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
 var names = {};
+var name;
 labels["start"] = "Last known pos";
 labels["lost"] = "got lost";
 labels["end"] = "Next known pos";
@@ -69,32 +70,13 @@ if (navigator.geolocation) {
 L.control.scale({"position":"bottomright"}).addTo(map);
 
 createButtons("buttonBar");
+
 var positions = {};
-function addMarker(name) {
-  const colors = {
-    start:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png",
-    end:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png",
-    lost:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png"
-  };
-
+function addMarker(n) {
+  name = n;
   if (!positions[names[name]]) {
-    var point = map.getCenter();
-
-    var icon = L.icon({
-      iconUrl: colors[names[name]],
-      iconSize: [30, 30]
-    });
-    var marker = new L.marker(point, {
-      icon: icon,
-      title: labels[names[name]],
-      draggable: true,
-      autoPan: true
-    }).addTo(map);
-    marker.on('dragend', pointsValid )
-    positions[names[name]] = marker;
+    document.getElementById('map').style.cursor = 'crosshair'
+    map.on('click', setMarker)
   } else {
     map.panTo(positions[names[name]].getLatLng());
   }
@@ -104,6 +86,43 @@ function addMarker(name) {
       displayChecks();
     }
   }
+}
+
+
+function setMarker(e){
+  if (!positions[names[name]]) {
+  const colors = {
+    start:
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png",
+    end:
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png",
+    lost:
+    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png"
+  };
+    var icon = L.icon({
+      iconUrl: colors[names[name]],
+      iconSize: [30, 30]
+    });
+  lat = e.latlng.lat;
+  lon = e.latlng.lng;
+
+  console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
+
+  //Add a marker to show where you clicked.
+  var marker = new L.marker([lat,lon], {
+    icon: icon,
+    title: labels[names[name]],
+    draggable: true,
+    autoPan: true
+  }).addTo(map);
+  marker.on('dragend', pointsValid )
+  positions[names[name]] = marker;
+
+  } else {
+    map.panTo(positions[names[name]].getLatLng());
+  }
+  document.getElementById('map').style.cursor = '' //(reset)
+  map.removeEventListener("click", setMarker , false);
 }
 
 function cleanup(){ 
