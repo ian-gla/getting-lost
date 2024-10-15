@@ -49,11 +49,12 @@ L.tileLayer(tiles, {
   attribution:
   '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
-const search = new GeoSearch.GeoSearchControl({
-  provider: new GeoSearch.OpenStreetMapProvider()
+var geocoder = L.Control.geocoder({
+  defaultMarkGeocode: false,
+  position: 'topleft',
 });
-
-map.addControl(search);
+geocoder.addTo(map)._expand();
+// move to users location
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function(position) {
     latit = position.coords.latitude;
