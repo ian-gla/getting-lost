@@ -1,4 +1,4 @@
-  document.getElementById('map').style.cursor = '' //(reset)
+document.getElementById('map').style.cursor = '' //(reset)
 
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
@@ -87,10 +87,9 @@ var baseMaps = {
     "OpenStreetMap.HOT": osmHOT,
     "OpenTopo": osmTopo,
     "OSM CAT": osmCAT,
-  "OSM Bright": osmBright,
-  "Carto Positron": CartoDB_Positron,
-  "Carto Voyager": CartoDB_Voyager,
-
+    "OSM Bright": osmBright,
+    "Carto Positron": CartoDB_Positron,
+    "Carto Voyager": CartoDB_Voyager,
 };
 
 var map = L.map("map",{
@@ -98,11 +97,16 @@ var map = L.map("map",{
   zoom: 17,
   layers: osm, 
 });
+
 var layerControl = L.control.layers(baseMaps, "", {position:'topleft'}).addTo(map);
+
 var geocoder = L.Control.geocoder({
   defaultMarkGeocode: false,
   position: 'topleft',
-});
+}).on('markgeocode', function(e) {
+    var ll = e.geocode.center;
+    map.panTo(ll);
+  });
 geocoder.addTo(map)._expand();
 // move to users location
 if (navigator.geolocation) {
