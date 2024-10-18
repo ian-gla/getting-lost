@@ -176,6 +176,7 @@ function setMarker(e){
   }
   document.getElementById('map').style.cursor = '' //(reset)
   map.removeEventListener("click", setMarker , false);
+  pointsValid()
 }
 
 function cleanup(){ 
@@ -199,8 +200,17 @@ function displayChecks(){
   data_entry.style.display='block';
 }
 function changeView(){
-  data2_entry.style.display='block';
-  data_entry.style.display='none';
+  s= data_entry.getElementsByTagName('select');
+  res=false;
+  for(var i=0;i<s.length;i++){
+    res |= s[i].options[s[i].selectedIndex].value == "";
+  }
+  if(res){
+    alert("Please select values for all the boxes");
+  } else {
+    data2_entry.style.display='block';
+    data_entry.style.display='none';
+  }
 }
 
 function pointsValid() {
@@ -280,26 +290,16 @@ function collectData() {
   cleanup();
 }
 
-function getCheckedBoxes(chkboxName) {
-  var checkboxes = document.getElementsByName(chkboxName);
-  var checkboxesChecked = [];
-  // loop over them all
-  for (var i = 0; i < checkboxes.length; i++) {
-    // And stick the checked ones onto an array...
-    if (checkboxes[i].checked) {
-      checkboxesChecked.push(checkboxes[i]);
-    }
+
+function checkData(){
+  s= data2_entry.getElementsByTagName('select');
+  res=false;
+  for(var i=0;i<s.length;i++){
+    res |= s[i].options[s[i].selectedIndex].value == "";
   }
-  // Return the array if it is non-empty, or null
-  return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+  if(res){
+    alert("Please select values for all the boxes");
+  } else {
+    collectData();
+  }
 }
-
-function createSubmit(div) {
-  var target = document.querySelector("#" + div);
-  var startEl = document.createElement("button");
-  startEl.innerHTML = "submit";
-  startEl.class = "button";
-  startEl.onclick = collectData;
-  target.appendChild(startEl);
-}
-
