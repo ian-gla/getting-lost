@@ -1,5 +1,8 @@
 document.getElementById('map').style.cursor = '' //(reset)
 
+const dialog = document.querySelector("dialog");
+const closeButton = document.querySelector("#mapbox > dialog:nth-child(3) > button:nth-child(2)");
+const proceedButton = document.querySelector("#mapbox > dialog:nth-child(3) > button:nth-child(3)");
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
 var min_angle = 90; // max angle between segments
@@ -14,6 +17,15 @@ labels["end"] = "Next known pos";
 for (key in labels) {
   names[labels[key]] = key;
 }
+closeButton.addEventListener("click", () => {
+  pointsGood = false;
+  dialog.close();
+});
+proceedButton.addEventListener("click", () => {
+  pointsGood = true;
+  dialog.close();
+  displayChecks();
+});
 function createButtons(div) {
   var target = document.querySelector("#" + div);
   var startB = document.createElement("button");
@@ -238,27 +250,28 @@ function pointsValid() {
   var too_short = true;
   var too_long = true;
   var too_wide = true;
-  var message = "";
+  var message = "The points you have selected seem to be a little odd, are you sure they are correct?<br>";
   if (distance1 < max_dist && distance2 < max_dist){
     too_long = false;
   } else {
-    message += "Your points are too far apart, please adjust them.\n";
+    message += "Your points are too far apart ("+Math.max(distance1, distance2).toFixed(2)+"km)<br>\n";
   }
   if (distance1 > min_dist && distance2 > min_dist){
     too_short = false;
   } else {
-    message += "Your points are too close together, please adjust them.\n";
+    message += "Your points are too close together ("+Math.max(distance1, distance2).toFixed(2)+"km)<br>\n";
   }
   if (angle < min_angle){
     too_wide = false;
   } else {
-    message += "The angle "+angle+": between your points is too wide, please adjust them.\n";
+    message += "The angle "+angle.toFixed(2)+": between your points is too wide<br>\n";
   }
 
 
   if (too_long || too_short || too_wide){
     pointsGood = false;
-    alert(message);
+    document.querySelector("#message").innerHTML = message;
+    dialog.showModal();
   } else {
     pointsGood = true;
     displayChecks();
