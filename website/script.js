@@ -1,8 +1,11 @@
 document.getElementById('map').style.cursor = '' //(reset)
 
-const dialog = document.querySelector("dialog");
-const closeButton = document.querySelector("#mapbox > dialog:nth-child(3) > button:nth-child(2)");
-const proceedButton = document.querySelector("#mapbox > dialog:nth-child(3) > button:nth-child(3)");
+const dialogM = document.querySelector("#markers");
+const closeButtonM = document.querySelector("#markers > button:nth-child(2)");
+const proceedButtonM = document.querySelector("#markers > button:nth-child(3)");
+const dialogS = document.querySelector("#submit");
+const closeButtonS = document.querySelector("#submit > button:nth-child(2)");
+const proceedButtonS = document.querySelector("#submit > button:nth-child(3)");
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
 var min_angle = 90; // max angle between segments
@@ -17,14 +20,22 @@ labels["end"] = "Next known pos";
 for (key in labels) {
   names[labels[key]] = key;
 }
-closeButton.addEventListener("click", () => {
+closeButtonM.addEventListener("click", () => {
   pointsGood = false;
-  dialog.close();
+  dialogM.close();
 });
-proceedButton.addEventListener("click", () => {
+proceedButtonM.addEventListener("click", () => {
   pointsGood = true;
-  dialog.close();
+  dialogM.close();
   displayChecks();
+});
+closeButtonS.addEventListener("click", () => {
+  dialogS.close();
+  //continue to allow edits to the info pages!
+});
+proceedButtonS.addEventListener("click", () => {
+  dialogS.close();
+  //submit the data!
 });
 function createButtons(div) {
   var target = document.querySelector("#" + div);
@@ -210,6 +221,7 @@ function displayChecks(){
   buttons.style.display = 'none';
   info.style.display='none';
   data_entry.style.display='block';
+  data2_entry.style.display='none';
 }
 function changeView(){
   s= data_entry.getElementsByTagName('select');
@@ -271,7 +283,7 @@ function pointsValid() {
   if (too_long || too_short || too_wide){
     pointsGood = false;
     document.querySelector("#message").innerHTML = message;
-    dialog.showModal();
+    dialogM.showModal();
   } else {
     pointsGood = true;
     displayChecks();
@@ -299,8 +311,16 @@ function collectData() {
   for(var i=0;i<s.length;i++){
     res[s[i].id] = s[i].value;
   }
-  alert(JSON.stringify(res));
-  cleanup();
+  //set res data nicely!
+
+  let html = `<ul>`;
+  for (const [key, value] of Object.entries(res)) {
+    html += `<li>${key} = ${value}</li>`;
+  }
+
+  html += `</ul>`;
+  document.querySelector("#submessage").innerHTML = html;
+  dialogS.showModal();
 }
 
 

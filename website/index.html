@@ -126,13 +126,19 @@
         <label for="explain">Open-ended explanation of why you got lost</label>
         <textarea id="explain"></textarea>
         <hr style="margin-top: 15px;">
+        <button type="button" onClick="displayChecks()">Back</button>
         <button type="button" onclick="checkData()">Save</button>
       </form>
 
     </div>
   </div>
-  <dialog>
-    <div id="message"></div>
+  <dialog id="markers">
+    <div class="message" id="message"></div>
+    <button autofocus>Cancel</button> <button>Proceed</button>
+  </dialog>
+  <dialog id="submit">
+    Is this information correct? are you happy to send it to us?
+    <div class="message" id="submessage"></div>
     <button autofocus>Cancel</button> <button>Proceed</button>
   </dialog>
   <script src='./script.js'></script>
