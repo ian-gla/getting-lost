@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="https://unpkg.com/@turf/turf@%5E7/turf.min.js"></script>
+  <title>Getting Lost</title>
 </head>
 
 <body>
@@ -42,6 +43,25 @@
           <option value="PNTS">Prefer Not To Say</option>
         </select>
 
+        <label for='nav-skill'>How easy do you typically find navigating whilst walking in cities (independent
+          of this event)?</label>
+        <select id = "nav-skill">
+          <option value="" disabled selected>Select your option</option>
+          <option value="1">Very Easy</option>
+          <option value="2">Somewhat Easy</option>
+          <option value="3">Neither Easy or Hard</option>
+          <option value="4">Somewhat Hard</option>
+          <option value="5">Very Hard</option>
+        </select>
+
+
+        <hr style="margin-top: 15px;">
+        <button type="button" onclick="changeView()">Next</button>
+        </form>
+    </div>
+    <div class="data-panel" id="more-data">
+      <p>Please tell us a little about how you got lost</p>
+      <form id="more-data-entry-form">
         <label for="timeOfDay">Time Of Day:</label>
         <select id="timeOfDay">
           <option value="" disabled selected>Select your option</option>
@@ -62,14 +82,7 @@
           <option value="Saturday">Saturday</option>
           <option value="Sunday">Sunday</option>
         </select>
-
-        <hr style="margin-top: 15px;">
-        <button type="button" onclick="changeView()">Next</button>
-    </div>
-    <div class="data-panel" id="more-data">
-      <p>Please tell us a little about how you got lost</p>
-      <form id="more-data-entry-form">
-        <label for="familiarity">How familiar with the area are yoy:</label>
+        <label for="familiarity">How familiar with the area are you:</label>
         <select id="familiarity">
           <option value="" disabled selected>Select your option</option>
           <option value='1'>Not at all familiar</option>
@@ -80,66 +93,54 @@
         </select>
 
         <label for="guidance">Main method of route guidance</label>
-        <select id="Main method of route guidance">
+        <select id="guidance">
           <option value="" disabled selected>Select your option</option>
           <option value="1">Smart Phone/Sat Nav</option>
           <option value="2">Paper Map</option>
-          <option value="3">Someone else's directions (in a group)</option>
-          <option value="4">Someone else's directions (not in a group)</option>
-          <option value="5">Street Signs</option>
-          <option value="6">I was just wandering</option>
+          <option value="3">Someone else's directions</option>
+          <option value="4">Street Signs</option>
+          <option value="5">I was just wandering</option>
         </select>
 
-        <label for="group">Where you walking in a group?</label>
+        <label for="group">Was anyone walking with you?</label>
         <select id="group">
           <option value="" disabled selected>Select your option</option>
-          <option value='0'>no</option>
-          <option value='1'>yes</option>
-        </select>
-
-        <label for='nav-skill'>How easy do you typically find navigating whilst walking in cities (independent
-          of this event)?</label>
-        <select id = "nav-skill">
-          <option value="" disabled selected>Select your option</option>
-          <option value="1">Very Easy</option>
-          <option value="2">Somewhat Easy</option>
-          <option value="3">Neither Easy or Hard</option>
-          <option value="4">Somewhat Hard</option>
-          <option value="5">Very Hard</option>
+          <option value='0'>No</option>
+          <option value='1'>Yes</option>
         </select>
 
         <label for="context">Please describe the context in which you got lost in your own words</label>
-        <textarea id="context" rows="3">
-        </textarea>
+        <textarea id="context" rows="3"></textarea>
 
 
         <label for="factors">What was the most important factor in you getting lost?</label>
         <select id="factors">
           <option value="" disabled selected>Select your option</option>
           <option value="1">Environment</option>
-          <option value="2">street layout</option>
-          <option value="3">number of people</option>
-          <option value="4">busy streets</option>
-          <option value="5">complex street signs</option>
+          <option value="2">Street layout</option>
+          <option value="3">Number of people</option>
+          <option value="4">Busy streets</option>
+          <option value="5">Complex street signs</option>
         </select>
 
         <label for="explain">Open-ended explanation of why you got lost</label>
         <textarea id="explain"></textarea>
         <hr style="margin-top: 15px;">
-        <button type="button" onClick="displayChecks">Back</button>
+        <button type="button" onClick="displayChecks()">Back</button>
         <button type="button" onclick="checkData()">Save</button>
       </form>
 
     </div>
   </div>
+  </div>
   <dialog id="markers">
     <div class="message" id="message"></div>
-    <button autofocus>Cancel</button> <button>Proceed</button>
+    <button>Cancel</button> <button>Proceed</button>
   </dialog>
   <dialog id="submit">
     Is this information correct? are you happy to send it to us?
     <div class="message" id="submessage"></div>
-    <button autofocus>Cancel</button> <button>Proceed</button>
+    <button>Cancel</button> <button>Proceed</button>
   </dialog>
   <script src='./script.js'></script>
 </body>

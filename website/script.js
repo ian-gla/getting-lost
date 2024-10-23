@@ -36,6 +36,7 @@ closeButtonS.addEventListener("click", () => {
 proceedButtonS.addEventListener("click", () => {
   dialogS.close();
   //submit the data!
+  cleanup();
 });
 function createButtons(div) {
   var target = document.querySelector("#" + div);
@@ -206,6 +207,10 @@ function setMarker(e){
 }
 
 function cleanup(){ 
+  if(data_form!=null)
+    clearForm(data_form);
+  if(data2_form!=null)
+    clearForm(data2_form);
   info.style.display='block';
   buttons.style.display = 'block';
   data_entry.style.display='none';
@@ -220,12 +225,14 @@ function cleanup(){
 
 }
 function displayChecks(){
-  console.log("info off, data 1 on")
-  buttons.style.display = 'none';
-  info.style.display='none';
-  data_entry.style.display='block';
-  data2_entry.style.display='none';
-}
+    console.log("info off, data 1 on")
+    buttons.style.display = 'none';
+    info.style.display='none';
+    data_entry.style.display='block';
+    data_form = document.querySelector("#data-entry-form");
+    data2_entry.style.display='none';
+  }
+  var data_form, data2_form;
 function changeView(){
   s= data_entry.getElementsByTagName('select');
   res=false;
@@ -236,6 +243,7 @@ function changeView(){
     alert("Please select values for all the boxes");
   } else {
     data2_entry.style.display='block';
+    data2_form = document.querySelector("#more-data-entry-form");
     data_entry.style.display='none';
   }
 }
@@ -339,3 +347,42 @@ function checkData(){
     collectData();
   }
 }
+
+function clearForm(myFormElement) {
+
+  var elements = myFormElement.elements;
+
+  myFormElement.reset();
+
+  for(i=0; i<elements.length; i++) {
+
+  field_type = elements[i].type.toLowerCase();
+
+  switch(field_type) {
+
+    case "text":
+    case "password":
+    case "textarea":
+          case "hidden":
+
+      elements[i].value = "";
+      break;
+
+    case "radio":
+    case "checkbox":
+        if (elements[i].checked) {
+          elements[i].checked = false;
+      }
+      break;
+
+    case "select-one":
+    case "select-multi":
+                elements[i].selectedIndex = -1;
+      break;
+
+    default:
+      break;
+  }
+}
+}
+
