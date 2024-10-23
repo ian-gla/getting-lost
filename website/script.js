@@ -42,16 +42,19 @@ function createButtons(div) {
   var startB = document.createElement("button");
   startB.innerHTML = labels["start"];
   startB.class = "button";
+  startB.id = 'start';
   startB.onclick = clicked;
   target.appendChild(startB);
   var lostB = document.createElement("button");
   lostB.innerHTML = labels["lost"];
   lostB.class = "button";
+  lostB.id = "lost";
   lostB.onclick = clicked;
   target.appendChild(lostB);
   var endB = document.createElement("button");
   endB.innerHTML = labels["end"];
   endB.class = "button";
+  endB.id = "end";
   endB.onclick = clicked;
   target.appendChild(endB);
 }
