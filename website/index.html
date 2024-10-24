@@ -10,6 +10,9 @@
 </head>
 
 <body>
+  <div id="outer">
+    <div id='buttonBar'></div>
+    </div>
   <div id='mapbox'>
     <div id="map"></div>
 
@@ -18,7 +21,6 @@
       <h1>Getting Lost</h1>
       <p>Please mark on the map roughly where you were coming from and going to and where you got lost. You can drag the flags to the position you want, if necessary zoom in and move them again. Then check as many of the reasons on the right for getting lost as apply. Finally, please click the submit button to send us your information.
     </div>
-    <div id='buttonBar'></div>
     <div class="data-panel" id="data-entry-panel">
       <p>Please tell us a little about your self:</p>
       <form id="data-entry-form">
@@ -150,12 +152,13 @@
   </div>
   <dialog id="markers">
     <div class="message" id="message"></div>
-    <button>Cancel</button> <button>Proceed</button>
+    <button>Move the markers</button> <button>Continue to survey</button>
   </dialog>
   <dialog id="submit">
-    Is this information correct? are you happy to send it to us?
+    Is this information correct? 
     <div class="message" id="submessage"></div>
-    <button>Cancel</button> <button>Proceed</button>
+    Are you happy to send it to us?
+    <button>Edit your responses</button> <button>Submit</button>
   </dialog>
   <script src='./script.js'></script>
 </body>

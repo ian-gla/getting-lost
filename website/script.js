@@ -14,9 +14,9 @@ var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
 var names = {};
 var name;
-labels["start"] = "Last known pos";
-labels["lost"] = "got lost";
-labels["end"] = "Next known pos";
+labels["start"] = "Last known position";
+labels["lost"] = "Where you got lost";
+labels["end"] = "Next known position";
 for (key in labels) {
   names[labels[key]] = key;
 }
@@ -179,15 +179,16 @@ function setMarker(e){
   if (!positions[names[name]]) {
   const colors = {
     start:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png",
+    "assets/flag_green.png",
     end:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png",
+    "assets/flag_red.png",
     lost:
-    "https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png"
+    "assets/flag_blue.png"
   };
     var icon = L.icon({
       iconUrl: colors[names[name]],
-      iconSize: [30, 30]
+      iconSize: [30, 30],
+      iconAnchor: [20, 27], 
     });
   lat = e.latlng.lat;
   lon = e.latlng.lng;

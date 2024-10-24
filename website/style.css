@@ -6,15 +6,18 @@
   left: 0;
   zindex: 0;
 }
+#outer {
+  width:100%;
+  position: absolute;
+  bottom: 10px;
+  z-index: 2000;
+}
 #buttonBar {
-  position: relative;
-  //top 10px;
-  //right 10px;
-  width: 100%;
-  background-color: #f8f8f8;
-  // padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  margin: 0 auto;
+  display: table;
+  margin: 0 auto;
+  width: 500px;
+  padding: 15px;
   z-index: 2000;
 }
 
@@ -75,14 +78,14 @@
 }
 
 #start {
-  background-color: #04AA6D; /* Green */
+  background-color: #a5df9b; /* Green */
 }
 
 #lost {
-  background-color: blue;
+  background-color: #81cdff;
 }
 #end {
-  background-color: red;
+  background-color: #ff6057;
 }
 textarea {
   width: 100%;
@@ -94,19 +97,13 @@ textarea {
 }
 
 .leaflet-container.start-flag-cursor-enabled {
-    width: 30px;
-    height: 30px;
-    cursor:url(https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_green.png), crosshair;
+    cursor:url(assets/flag_green.png) 20 27, crosshair;
 }
 .leaflet-container.lost-flag-cursor-enabled {
-    width: 30px;
-    height: 30px;
-    cursor:url(https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_blue.png), crosshair;
+    cursor:url(assets/flag_blue.png) 20 27, crosshair;
 }
 .leaflet-container.end-flag-cursor-enabled {
-    width: 30px;
-    height: 30px;
-    cursor:url(https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png), crosshair;
+    cursor:url(assets/flag_red.png) 20 27, crosshair;
 }
 
 /* set thumb width */
