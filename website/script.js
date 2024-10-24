@@ -8,7 +8,7 @@ const closeButtonS = document.querySelector("#submit > button:nth-child(2)");
 const proceedButtonS = document.querySelector("#submit > button:nth-child(3)");
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
-var min_angle = 90; // max angle between segments
+var min_angle = 130; // max angle between segments
 var pointsGood = false;
 var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
@@ -155,21 +155,27 @@ var positions = {};
 function addMarker(n) {
   name = n;
   if (!positions[names[name]]) {
-    document.getElementById('map').style.cursor = 'crosshair'
+    L.DomUtil.addClass(map._container,`${names[name]}-flag-cursor-enabled`);
     map.on('click', setMarker)
   } else {
     map.panTo(positions[names[name]].getLatLng());
   }
   if(Object.values(positions).length == 3){
-    pointsValid();
-    if(pointsGood){
+      pointsValid();
+      if(pointsGood){
       displayChecks();
     }
   }
 }
 
+  function mapClickListen(e){
+    console.log("Before click: "+e.target.dragging.enabled())
+    e.target.dragging.enable();
+    console.log("After click: "+e.target.dragging.enabled())
+  }
 
 function setMarker(e){
+  map.removeEventListener("click", setMarker , false);
   if (!positions[names[name]]) {
   const colors = {
     start:
@@ -186,23 +192,36 @@ function setMarker(e){
   lat = e.latlng.lat;
   lon = e.latlng.lng;
 
-  console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
-
   //Add a marker to show where you clicked.
   var marker = new L.marker([lat,lon], {
     icon: icon,
     title: labels[names[name]],
-    draggable: true,
-    autoPan: true
+    draggable: false,
+    clickable: true,
+    autoPan: true,
   }).addTo(map);
-  marker.on('dragend', pointsValid )
+  marker.on('click', mapClickListen);
+  /* this is all to work around dragend triggering a click
+   * see https://gis.stackexchange.com/questions/190049/leaflet-map-draggable-marker-events
+   */
+  marker.on('dragstart', function(e) {
+    console.log('marker dragstart event');
+    marker.off('click', mapClickListen);
+  });
+  marker.on('dragend', (e) => {
+    console.log("Before end "+e.target.dragging.enabled())
+    e.target.dragging.disable();
+    console.log("After end "+e.target.dragging.enabled())
+    pointsValid();
+    marker.on('click', mapClickListen);
+  });
   positions[names[name]] = marker;
 
   } else {
     map.panTo(positions[names[name]].getLatLng());
   }
-  document.getElementById('map').style.cursor = '' //(reset)
-  map.removeEventListener("click", setMarker , false);
+  //document.getElementById('map').style.cursor = '' //(reset)
+  L.DomUtil.removeClass(map._container,`${names[name]}-flag-cursor-enabled`);
   pointsValid()
 }
 
@@ -250,6 +269,7 @@ function changeView(){
 
 function pointsValid() {
   console.log("points check")
+
   if(Object.values(positions).length != 3){
     console.log("not enough points in check")
     return;
