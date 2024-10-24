@@ -14,6 +14,7 @@ var center = [55.872505281511444, -4.290044317503135]
 var labels = {};
 var names = {};
 var name;
+var lastClick="";
 labels["start"] = "Last known position";
 labels["lost"] = "Where you got lost";
 labels["end"] = "Next known position";
@@ -154,6 +155,13 @@ createButtons("buttonBar");
 var positions = {};
 function addMarker(n) {
   name = n;
+
+  if(lastClick){
+    L.DomUtil.removeClass(map._container,`${lastClick}-flag-cursor-enabled`);
+  }
+
+
+  lastClick = names[name];
   if (!positions[names[name]]) {
     L.DomUtil.addClass(map._container,`${names[name]}-flag-cursor-enabled`);
     map.on('click', setMarker)
