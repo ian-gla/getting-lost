@@ -29,12 +29,16 @@
   position: absolute;
   top: 30px;
   right: 10px;
-  bottom: 100px;
+ /* bottom: 100px;*/
   width: 300px;
+  margin: 2px;
+  padding: 2px;
   overflow: auto;
   background-color: #f8f8f8;
   border: 1px solid #000000;
   z-index: 1900;
+  display: grid;
+  place-items: start center;
 
 }
 
@@ -105,3 +109,75 @@ textarea {
     cursor:url(https://raw.githubusercontent.com/planetfederal/geosilk/master/silk/flag_red.png), crosshair;
 }
 
+/* set thumb width */
+input[type=range], input[type=range] + datalist { --thumb-width: 8px; }
+
+/* style range */
+input[type=range] {
+  -webkit-appearance: none; /* hide track and thumb */
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+}
+
+/* style datalist */
+input[type=range] + datalist {
+  display: flex;
+  margin-top: -4px;
+}
+input[type=range] + datalist option {
+  display: inline-block;
+  width: calc((100% - var(--thumb-width)) / (var(--list-length) - 1));
+  text-align: center;
+}
+input[type=range] + datalist option:first-child {
+  width: calc((100% - var(--thumb-width)) / ((var(--list-length) - 1) * 2) + var(--thumb-width) / 2);
+  text-align: left;
+}
+input[type=range] + datalist option:last-child {
+  width: calc((100% - var(--thumb-width)) / ((var(--list-length) - 1) * 2) + var(--thumb-width) / 2);
+  text-align: right;
+}
+
+/* style Firefox range and thumb */
+input[type=range]::-moz-range-track {
+    background: #eee;
+    cursor: pointer;
+
+    height: 2px;
+    border: 1px solid #888;
+    border-radius: 1px;
+}
+input[type=range]::-moz-range-thumb {
+    background: #eee;
+
+    box-sizing: border-box;
+    width: var(--thumb-width);
+    height: 20px;
+
+    cursor: pointer;
+
+    border: 1px solid #888;
+    border-radius: 3px;
+}
+
+/* style Chrome range and thumb */
+input[type=range]::-webkit-slider-runnable-track {
+    background: #eee;
+    cursor: pointer;
+
+    height: 2px;
+    border: 1px solid #888;
+    border-radius: 1px;
+}
+input[type=range]::-webkit-slider-thumb {
+    background: #eee;
+
+    box-sizing: border-box;
+    width: var(--thumb-width);
+    height: 20px;
+
+    cursor: pointer;
+
+    border: 1px solid #888;
+}

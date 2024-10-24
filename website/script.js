@@ -334,10 +334,16 @@ function collectData() {
   for(var i=0;i<s.length;i++){
     res[s[i].id] = s[i].options[s[i].selectedIndex].value;
   }
+  s= document.getElementById('nav-skill');
+  res[s.id] = s.value;
+
   s= data2_entry.getElementsByTagName('select');
   for(var i=0;i<s.length;i++){
     res[s[i].id] = s[i].options[s[i].selectedIndex].value;
   }
+  s= document.getElementById('familiarity');
+  res[s.id] = s.value;
+
   s= data2_entry.getElementsByTagName('textarea');
   for(var i=0;i<s.length;i++){
     res[s[i].id] = s[i].value;

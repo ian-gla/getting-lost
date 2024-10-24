@@ -30,7 +30,7 @@
           <option value="35-44">35-44</option>
           <option value="45-54">45-54</option>
           <option value="55-64">55-64</option>
-          <option value="65+">61+</option>
+          <option value="65+">64+</option>
           <option value='na'>Prefer not to say</option>
         </select>
 
@@ -44,17 +44,15 @@
         </select>
 
         <label for='nav-skill'>How easy do you typically find navigating whilst walking in cities (independent
-          of this event)?</label>
-        <select id = "nav-skill">
-          <option value="" disabled selected>Select your option</option>
-          <option value="1">Very Easy</option>
-          <option value="2">Somewhat Easy</option>
-          <option value="3">Neither Easy or Hard</option>
-          <option value="4">Somewhat Hard</option>
-          <option value="5">Very Hard</option>
-        </select>
-
-
+          of this event)? 1=easy, 5=hard</label>
+        <input id="nav-skill" type="range" min="1" max="5" value="0" step="1" list="my-datalist">
+        <datalist id="my-datalist" style="--list-length: 5;"><!--
+          ---><option>1</option><!--
+          ---><option>2</option><!--
+          ---><option>3</option><!--
+          ---><option>4</option><!--
+          ---><option>5</option><!--
+          ---></datalist>
         <hr style="margin-top: 15px;">
         <button type="button" onclick="changeView()">Next</button>
         </form>
@@ -82,45 +80,46 @@
           <option value="Saturday">Saturday</option>
           <option value="Sunday">Sunday</option>
         </select>
-        <label for="familiarity">How familiar with the area are you:</label>
-        <select id="familiarity">
-          <option value="" disabled selected>Select your option</option>
-          <option value='1'>Not at all familiar</option>
-          <option value="2">Somewhat familiar</option>
-          <option value="3">Fairly familiar</option>
-          <option value="4">Reasonably familiar</option>
-          <option value="5">Very familiar</option>
-        </select>
 
         <label for="guidance">Main method of route guidance</label>
         <select id="guidance">
           <option value="" disabled selected>Select your option</option>
-          <option value="1">Smart Phone/Sat Nav</option>
-          <option value="2">Paper Map</option>
-          <option value="3">Someone else's directions</option>
-          <option value="4">Street Signs</option>
-          <option value="5">I was just wandering</option>
+          <option >Smart Phone/Sat Nav</option>
+          <option >Paper Map</option>
+          <option >Someone else's directions</option>
+          <option >Street Signs</option>
+          <option >I was just wandering</option>
         </select>
 
         <label for="group">Was anyone walking with you?</label>
         <select id="group">
           <option value="" disabled selected>Select your option</option>
-          <option value='0'>No</option>
-          <option value='1'>Yes</option>
+          <option >No</option>
+          <option >Yes</option>
         </select>
 
         <label for="context">Please describe the context in which you got lost in your own words</label>
         <textarea id="context" rows="3"></textarea>
 
 
+        <label for="familiarity">How familiar with the area are you (1=not at all, 5=very):</label>
+        <input id="familiarity" type="range" min="1" max="5" value="0" step="1" list="my-datalist2">
+        <datalist id="my-datalist2" style="--list-length: 5;"><!--
+          ---><option>1</option><!--
+          ---><option>2</option><!--
+          ---><option>3</option><!--
+          ---><option>4</option><!--
+          ---><option>5</option><!--
+          ---></datalist>
         <label for="factors">What was the most important factor in you getting lost?</label>
         <select id="factors">
           <option value="" disabled selected>Select your option</option>
-          <option value="1">Environment</option>
-          <option value="2">Street layout</option>
-          <option value="3">Number of people</option>
-          <option value="4">Busy streets</option>
-          <option value="5">Complex street signs</option>
+          <option>Environment</option>
+          <option>Street layout</option>
+          <option>Number of people</option>
+          <option>Busy streets</option>
+          <option>Complex street signs</option>
+          <option>Other</option>
         </select>
 
         <label for="explain">Open-ended explanation of why you got lost</label>
