@@ -58,8 +58,19 @@
         </form>
     </div>
     <div class="data-panel" id="more-data">
-      <p>Please tell us a little about how you got lost</p>
+      <p>Please tell us a little about how you got lost:</p>
+      <hr style="margin-top: 15px;">
       <form id="more-data-entry-form">
+        <label for="when">How long ago, roughly, was this incident?</label>
+        <select id="when">
+          <option value="" disabled selected>Select your option</option>
+          <option>This week</option>
+          <option>Last week</option>
+          <option>A month ago</option>
+          <option>Six months ago</option>
+          <option>A Year or more</option>
+          <option>Don't remember</option>
+        </select>
         <label for="timeOfDay">Time Of Day:</label>
         <select id="timeOfDay">
           <option value="" disabled selected>Select your option</option>
@@ -67,6 +78,7 @@
           <option value="Afternoon">Afternoon</option>
           <option value="Evening">Evening</option>
           <option value="Night">Night</option>
+          <option>Don't remember</option>
         </select>
 
         <label for="dayOfWeek">Which day of the week?:</label>
@@ -79,6 +91,7 @@
           <option value="Friday">Friday</option>
           <option value="Saturday">Saturday</option>
           <option value="Sunday">Sunday</option>
+          <option>Don't remember</option>
         </select>
 
         <label for="guidance">Main method of route guidance</label>
@@ -89,6 +102,7 @@
           <option >Someone else's directions</option>
           <option >Street Signs</option>
           <option >I was just wandering</option>
+          <option>Don't remember</option>
         </select>
 
         <label for="group">Was anyone walking with you?</label>
@@ -96,6 +110,7 @@
           <option value="" disabled selected>Select your option</option>
           <option >No</option>
           <option >Yes</option>
+          <option>Don't remember</option>
         </select>
 
         <label for="context">Please describe the context in which you got lost in your own words</label>
@@ -120,6 +135,7 @@
           <option>Busy streets</option>
           <option>Complex street signs</option>
           <option>Other</option>
+          <option>Don't remember</option>
         </select>
 
         <label for="explain">Open-ended explanation of why you got lost</label>
