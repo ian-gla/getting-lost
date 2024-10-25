@@ -291,9 +291,13 @@ function cleanup() {
     data2_entry.style.display = 'none';
     var n = ['start', 'lost', 'end'];
     for (const m of n) {
-        console.log("got marker: ", m)
-        console.log(positions[m])
+        console.log("got marker: ", m);
+        console.log(positions[m]);
         map.removeLayer(positions[m]);
+        console.log(circles[m]);
+      if(circles[m]){
+        map.removeLayer(circles[m]);
+      }
     }
     positions = {};
 
