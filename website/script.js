@@ -300,6 +300,7 @@ function cleanup() {
       }
     }
     positions = {};
+  circles = {};
 
 }
 
