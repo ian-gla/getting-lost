@@ -12,9 +12,9 @@ const icons = {
     lost: "assets/flag_blue.png"
 };
 const colors = {
-  start: '#3A6152', 
-  end: '#ff6057',
-  lost: '#81cdff',
+    start: '#3A6152',
+    end: '#ff6057',
+    lost: '#81cdff',
 }
 var max_dist = 1; // distance in kn points must be within
 var min_dist = 0; // distance in kn points must be beyond
@@ -201,17 +201,35 @@ function mapClickListen(e) {
     console.log("After click: " + e.target.dragging.enabled())
 }
 
+
 function addCircle(marker) {
-  name = names[marker.options.title];
-  if (!circles[name]) {
-  circle = L.circle(marker.getLatLng(), 100);
-  circle.setStyle({color: colors[name]});
-  marker.on('drag', (e)=>{
-    circles[names[e.target.options.title]].setLatLng(e.latlng);
-  });
-  circle.addTo(map);
-  circles[name] = circle;
-  }
+    name = names[marker.options.title];
+    if (!circles[name]) {
+        const popup = document.createElement("div");
+        popup.innerHTML = 'adjust radius ';
+        const spinner = document.createElement("INPUT");
+      spinner.id = 'radius';
+        spinner.setAttribute("type", "number");
+        spinner.setAttribute("min", "10");
+        spinner.setAttribute("max", "200");
+        spinner.setAttribute("step", "10");
+        spinner.setAttribute("value", "100");
+        spinner.addEventListener('input', function(e) {
+          circle.setRadius(e.data);
+        });
+        popup.appendChild(spinner);
+        circle = L.circle(marker.getLatLng(), 100, {
+            color: colors[name],
+            fillcolor: colors[name],
+            fillopacity: 0.5,
+
+        }).bindPopup(popup).addTo(map);
+
+        marker.on('drag', (e) => {
+            circles[names[e.target.options.title]].setLatLng(e.latlng);
+        });
+        circles[name] = circle;
+    }
 }
 
 function setMarker(e) {
@@ -226,7 +244,7 @@ function setMarker(e) {
         lon = e.latlng.lng;
 
         //Add a marker to show where you clicked.
-      var latlng = L.latLng(lat, lon);
+        var latlng = L.latLng(lat, lon);
         var marker = new L.marker(latlng, {
             icon: icon,
             title: labels[names[name]],
@@ -372,6 +390,9 @@ function collectData() {
         end: endPos,
         lost: lostPos
     };
+    res["start_radius"] = circles['start'] ? circles['start'].getRadius() : 0;
+    res["lost_radius"] = circles['lost'] ? circles['lost'].getRadius() : 0;
+    res["end_radius"] = circles['end'] ? circles['end'].getRadius() : 0;
     s = data_entry.getElementsByTagName('select');
     for (var i = 0; i < s.length; i++) {
         res[s[i].id] = s[i].options[s[i].selectedIndex].value;
