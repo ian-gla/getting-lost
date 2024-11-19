@@ -34,6 +34,8 @@
   right: 10px;
  /* bottom: 100px;*/
   width: 300px;
+  max-width: 30%;
+  min-width: 100px;
   max-height: 90%;
   padding: 2px;
   overflow: auto;
@@ -42,7 +44,8 @@
   z-index: 1900;
   display: grid;
   place-items: start center;
-
+  font-family: Arial, Helvetica, sans-serif;
+  resize: horizontal;
 }
 
 .resizable-content {
