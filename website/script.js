@@ -39,7 +39,7 @@ closeButtonM.addEventListener("click", () => {
 proceedButtonM.addEventListener("click", () => {
     pointsGood = true;
     dialogM.close();
-    displayChecks();
+    displayButton();
 });
 closeButtonS.addEventListener("click", () => {
     dialogS.close();
@@ -190,7 +190,7 @@ function addMarker(n) {
     if (Object.values(positions).length == 3) {
         pointsValid();
         if (pointsGood) {
-            displayChecks();
+            displayButton();
         }
     }
 }
@@ -257,7 +257,7 @@ function setMarker(e) {
         var marker = new L.marker(latlng, {
             icon: icon,
             title: labels[names[name]],
-            draggable: false,
+            draggable: true,
             clickable: true,
             autoPan: true,
         }).addTo(map);
@@ -295,18 +295,18 @@ function cleanup() {
     if (data2_form != null)
         clearForm(data2_form);
     info.style.display = 'block';
+    document.getElementById('continue').remove();
+    buttonAdded = false;
+
     buttons.style.display = 'block';
     data_entry.style.display = 'none';
     data2_entry.style.display = 'none';
     var n = ['start', 'lost', 'end'];
     for (const m of n) {
-        console.log("got marker: ", m);
-        console.log(positions[m]);
         map.removeLayer(positions[m]);
-        console.log(circles[m]);
-      if(circles[m]){
-        map.removeLayer(circles[m]);
-      }
+        if (circles[m]) {
+            map.removeLayer(circles[m]);
+        }
     }
     positions = {};
   circles = {};
@@ -314,7 +314,17 @@ function cleanup() {
 }
 
 function displayChecks() {
-    console.log("info off, data 1 on")
+    
+    var n = ['start', 'lost', 'end'];
+    for (const m of n) {
+        positions[m].off("click");
+        positions[m].off('dblclick');
+        positions[m].off('dragstart');
+        positions[m].dragging.disable();
+        if (circles[m]) {
+          circles[m].off("click");
+        }
+    }
     buttons.style.display = 'none';
     info.style.display = 'none';
     data_entry.style.display = 'block';
@@ -339,8 +349,6 @@ function changeView() {
 }
 
 function pointsValid() {
-    console.log("points check")
-
     if (Object.values(positions).length != 3) {
         console.log("not enough points in check")
         return;
@@ -377,7 +385,7 @@ function pointsValid() {
     } else {
         message += "Your points are too close together (" + Math.max(distance1, distance2).toFixed(2) + "km)<br>\n";
     }
-    if (angle < min_angle) {
+    if (true /*angle < min_angle*/) {
         too_wide = false;
     } else {
         message += "The angle " + angle.toFixed(2) + ": between your points is too wide<br>\n";
@@ -390,9 +398,26 @@ function pointsValid() {
         dialogM.showModal();
     } else {
         pointsGood = true;
-        displayChecks();
+        displayButton();
     }
 
+}
+
+var buttonAdded = false;
+function displayButton() {
+    // add a button to display the questions when they are happy with the map locations
+    if (!buttonAdded) {
+        const div = document.createElement("div");
+        div.id = 'continue';
+        div.innerHTML = "<hr/><p>If you are happy with the position of the points (and circles) you can go on to the survey about factors that may have contributed to your getting lost.</p>"
+        const mvButton = document.createElement("button");
+        mvButton.innerHTML = "Continue to survey";
+        mvButton.addEventListener("click", displayChecks);
+        div.append(mvButton)
+
+        info.append(div);
+        buttonAdded = true;
+    }
 }
 
 function collectData() {
