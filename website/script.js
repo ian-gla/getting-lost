@@ -206,29 +206,38 @@ function addCircle(marker) {
     name = names[marker.options.title];
     if (!circles[name]) {
         const popup = document.createElement("div");
-        popup.innerHTML = 'adjust radius ';
-        const spinner = document.createElement("INPUT");
-      spinner.id = 'radius';
-        spinner.setAttribute("type", "number");
-        spinner.setAttribute("min", "10");
-        spinner.setAttribute("max", "200");
-        spinner.setAttribute("step", "10");
-        spinner.setAttribute("value", "100");
-        spinner.addEventListener('input', function(e) {
-          circle.setRadius(e.data);
+        popup.innerHTML = 'adjust radius: ';
+        
+        const up = document.createElement("button");
+        up.id = name+"_up_button";
+        up.innerHTML = `<i id='${name}_up' class="arrow up"></i>`;
+        up.addEventListener('click', function(e) {
+          id = e.target.id.substring(0,e.target.id.indexOf('_'));
+          circles[id].setRadius(circles[id].getRadius()+10);
         });
-        popup.appendChild(spinner);
+        popup.appendChild(up);
+        const down = document.createElement("button");
+        down.id = name+"_down_button";
+        down.innerHTML = `<i id='${name}_down' class="arrow down"></i>`;
+        down.addEventListener('click', function(e) {
+          id = e.target.id.substring(0,e.target.id.indexOf('_'));
+          radius = circles[id].getRadius();
+          if(radius > 10){
+            circles[id].setRadius(radius - 10);
+          }
+        });
+        popup.appendChild(down);
         circle = L.circle(marker.getLatLng(), 100, {
             color: colors[name],
             fillcolor: colors[name],
             fillopacity: 0.5,
 
         }).bindPopup(popup).addTo(map);
+        circles[name] = circle;
 
         marker.on('drag', (e) => {
             circles[names[e.target.options.title]].setLatLng(e.latlng);
         });
-        circles[name] = circle;
     }
 }
 
