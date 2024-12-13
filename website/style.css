@@ -9,7 +9,7 @@
 #outer {
   width:100%;
   position: absolute;
-  bottom: 10px;
+  top: 10px;
   z-index: 2000;
 }
 #buttonBar {
@@ -18,6 +18,7 @@
   margin: 0 auto;
   width: 500px;
   padding: 15px;
+  padding-right: 50px;
   z-index: 2000;
 }
 
@@ -37,7 +38,8 @@
   max-width: 30%;
   min-width: 100px;
   max-height: 90%;
-  padding: 2px;
+  margin: 2px;
+  padding: 12px;
   overflow: auto;
   background-color: #f8f8f8;
   border: 1px solid #000000;
@@ -63,15 +65,12 @@
   //right: 10px;
   width: 100%;
   background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 5px;
   z-index: 1000;
 }
 .button {
   height: 20px;
   width: 50px;
   border: none;
-  color: white;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -99,13 +98,13 @@ textarea {
 }
 
 .leaflet-container.start-flag-cursor-enabled {
-    cursor:url(assets/flag_green.png) 20 27, crosshair;
+    cursor:url(https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png) 12 41, crosshair;
 }
 .leaflet-container.lost-flag-cursor-enabled {
-    cursor:url(assets/flag_blue.png) 20 27, crosshair;
+    cursor:url(https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png) 12 41, crosshair;
 }
 .leaflet-container.end-flag-cursor-enabled {
-    cursor:url(assets/flag_red.png) 20 27, crosshair;
+    cursor:url(https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png) 12 41, crosshair;
 }
 
 /* set thumb width */
@@ -206,4 +205,69 @@ input[type=range]::-webkit-slider-thumb {
 .down {
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
+}
+
+/* respect dark mode */
+
+@media (prefers-color-scheme: dark) {
+  .leaflet-layer,
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-layers,
+  .leaflet-control-geocoder,
+  .leaflet-control-scale,
+  .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+  .leaflet-control-geocoder-form,
+  .leaflet-control-geocoder-form > input:nth-child(1),
+  .data-panel,
+  #sidebar,
+  #info,
+  #data-entry-form,
+  #more-data-entry-form,
+  #checks{
+    color: white;
+    background-color: black;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  * {
+    box-sizing: border-box;
+  }
+  .row::after {
+    content: "";
+    clear: both;
+    display: block;
+  }
+
+  [class*="col-"] {
+    float: left;
+    padding: 15px;
+  }
+
+  html {
+    font-family: "Lucida Sans", sans-serif;
+  }
+
+  #map {
+    width: 100%;
+    height: 99%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+  [class*="col-"] {
+    width: 100%;
+  }
+  .col-1 {max-height: 30%;}
+  #buttonBar {
+    width: 70px;
+    position: absolute;
+    left: 2px;
+    top: 170px;
+    padding: 0px;
+  }
 }
