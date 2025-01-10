@@ -20,6 +20,9 @@ class Users(Base):
     age = sa.Column("age", sa.Integer, nullable=False)
     gender = sa.Column("gender", sa.Integer, nullable=False)
     nav_skill = sa.Column("nav_skill", sa.Integer, nullable=False)
+    position = sa.Column(
+        "position", sa.Integer, sa.ForeignKey(f"{schema}.positions.id", ondelete="CASCADE"), nullable=False
+    )
 
 
 class Positions(Base):
