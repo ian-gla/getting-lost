@@ -17,9 +17,9 @@ class Users(Base):
     __tablename__ = "users"
 
     id = sa.Column("id", sa.Integer, primary_key=True)
-    age = sa.Column("age", sa.Integer, nullable=False)
-    gender = sa.Column("gender", sa.Integer, nullable=False)
-    nav_skill = sa.Column("nav_skill", sa.Integer, nullable=False)
+    age = sa.Column("age", sa.String, nullable=False)
+    gender = sa.Column("gender", sa.String, nullable=False)
+    nav_skill = sa.Column("nav_skill", sa.String, nullable=False)
     position = sa.Column(
         "position", sa.Integer, sa.ForeignKey(f"{schema}.positions.id", ondelete="CASCADE"), nullable=False
     )
