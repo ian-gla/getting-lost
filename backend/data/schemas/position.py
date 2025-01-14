@@ -34,5 +34,5 @@ class PositionCreate(PositionBase):
 
 
 class Position(PositionCreate):
-    store_id: int
+    id: int
     model_config = ConfigDict(from_attributes=True, alias_generator=to_camel, populate_by_name=True)

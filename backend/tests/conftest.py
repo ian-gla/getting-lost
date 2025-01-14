@@ -6,7 +6,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy_utils import create_database, database_exists
 
-from main import create_app
+from app import create_app
 from data.models import Base, Users, Positions, Events
 from data.session import create_session
 
@@ -23,13 +23,13 @@ def db() -> scoped_session:
     return db_session
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def cleanup_db(db: scoped_session) -> None:
     for table in reversed(Base.metadata.sorted_tables):
         db.execute(table.delete())
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def app_client(cleanup_db: Any) -> Generator[TestClient, None, None]:
     app = create_app()
     yield TestClient(app)
@@ -73,13 +73,13 @@ def create_position(db: scoped_session) -> Generator[Positions, None, None]:
 
 @pytest.fixture()
 def create_event(db: scoped_session, create_user: Users) -> Generator[Events, None, None]:
-    user = create_user()
+    user = create_user
     event = Events(
         user=user.id,
         position=user.position,
         when="This week",
-        timeOfDay="Morning",
-        dayOfWeek="Monday",
+        time_of_day="Morning",
+        day_of_week="Monday",
         guidance="Smart Phone/Sat Nav",
         group="No",
         factors="Environment",

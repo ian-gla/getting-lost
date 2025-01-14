@@ -1,8 +1,8 @@
 from functools import lru_cache
 from typing import Generator
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.exc import PendingRollbackError
 
 from config import get_settings
 
@@ -19,5 +19,7 @@ def get_session() -> Generator[scoped_session, None, None]:
     Session = create_session()
     try:
         yield Session
+    except PendingRollbackError:
+        scoped_session.rollback()
     finally:
         Session.remove()
