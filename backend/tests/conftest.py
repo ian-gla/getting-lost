@@ -1,5 +1,6 @@
 from typing import Any, Generator
-
+import os
+from sqlalchemy import create_engine
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.engine import Engine
@@ -7,15 +8,19 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy_utils import create_database, database_exists
 
 from app import create_app
-from data.models import Base, Users, Positions, Events
 from data.session import create_session
+
+from data.models import Users, Positions, Events
+from data.models import Base
 
 
 @pytest.fixture(scope="session")
 def db() -> scoped_session:
-    db_session: scoped_session = create_session()
+    db_url = os.getenv("test_database_url")
+    engine: Engine = create_engine(db_url, pool_pre_ping=True)
+    db_session: scoped_session = create_session(engine=engine)
     assert db_session.bind is not None
-    engine: Engine = db_session.bind.engine
+    # engine: Engine = db_session.bind.engine
     if not database_exists(engine.url):
         create_database(engine.url)
     Base.metadata.drop_all(bind=engine)
@@ -37,6 +42,7 @@ def app_client(cleanup_db: Any) -> Generator[TestClient, None, None]:
 
 @pytest.fixture()
 def create_user(db: scoped_session, create_position: Positions) -> Generator[Users, None, None]:
+
     user = Users(
         age="18-24",
         gender="F",
@@ -62,9 +68,9 @@ def create_position(db: scoped_session) -> Generator[Positions, None, None]:
         start="POINT(55.872179 -4.292532)",
         lost="POINT(55.873101 -4.290547)",
         end="POINT(55.8723 -4.289259)",
-        start_radius=0,
-        lost_radius=100,
-        end_radius=0,
+        start_radius=500,
+        lost_radius=500,
+        end_radius=500,
     )
     db.add(position)
     db.commit()

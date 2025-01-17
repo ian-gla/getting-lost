@@ -30,30 +30,30 @@ class Positions(Base):
     id = sa.Column("id", sa.Integer, primary_key=True)
     start = sa.Column(
         "start",
-        ga.types.Geometry(
+        ga.types.Geography(
             geometry_type="POINT",
             srid=4326,
-            from_text="ST_GeomFromEWKT",
+            from_text="ST_GeographyFromText",
             spatial_index=True,
         ),
         nullable=True,
     )
     lost = sa.Column(
         "lost",
-        ga.types.Geometry(
+        ga.types.Geography(
             geometry_type="POINT",
             srid=4326,
-            from_text="ST_GeomFromEWKT",
+            from_text="ST_GeographyFromText",
             spatial_index=True,
         ),
         nullable=True,
     )
     end = sa.Column(
         "end",
-        ga.types.Geometry(
+        ga.types.Geography(
             geometry_type="POINT",
             srid=4326,
-            from_text="ST_GeomFromEWKT",
+            from_text="ST_GeographyFromText",
             spatial_index=True,
         ),
         nullable=True,
@@ -76,12 +76,12 @@ class Events(Base):
     position = sa.Column(
         "position", sa.Integer, sa.ForeignKey(f"{schema}.positions.id", ondelete="CASCADE"), nullable=False
     )
-    when = sa.Column("when", sa.String(15))
-    time_of_day = sa.Column("time_of_day", sa.String(10))
-    day_of_week = sa.Column("day_of_week", sa.String(10))
-    guidance = sa.Column("guidance", sa.String(20))
-    group = sa.Column("group", sa.String(10))
-    factors = sa.Column("factors", sa.String(30))
+    when = sa.Column("when", sa.Text)
+    time_of_day = sa.Column("time_of_day", sa.Text)
+    day_of_week = sa.Column("day_of_week", sa.Text)
+    guidance = sa.Column("guidance", sa.Text)
+    group = sa.Column("group", sa.Text)
+    factors = sa.Column("factors", sa.Text)
     familiarity = sa.Column("familiarity", sa.Integer)
     context = sa.Column("context", sa.Text)
     explain = sa.Column("explain", sa.Text)

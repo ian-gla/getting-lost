@@ -1,5 +1,6 @@
 document.getElementById('map').style.cursor = '' //(reset)
 
+const server = "http://127.0.0.1:8000"
 const dialogM = document.querySelector("#markers");
 const closeButtonM = document.querySelector("#markers > button:nth-child(2)");
 const proceedButtonM = document.querySelector("#markers > button:nth-child(3)");
@@ -11,15 +12,16 @@ const colors = {
     end: '#ff6057',
     lost: '#81cdff',
 }
-var max_dist = 1; // distance in kn points must be within
-var min_dist = 0; // distance in kn points must be beyond
+var max_dist = 1; // distance in km points must be within
+var min_dist = 0; // distance in km points must be beyond
 var min_angle = 130; // max angle between segments
 var pointsGood = false;
-var center = [55.872505281511444, -4.290044317503135]
+var center = [55.872505281511444, -4.290044317503135];
 var labels = {};
 var names = {};
 var circles = {};
 var name;
+var position_id=0, user_id=0, event_id=0;
 var lastClick = "";
 labels["start"] = "Last known position";
 labels["lost"] = "Where you got lost";
@@ -220,6 +222,7 @@ function addCircle(marker) {
           if(radius > 10){
             circles[id].setRadius(radius - 10);
           }
+          pointsValid();
         });
         popup.appendChild(down);
         circle = L.circle(marker.getLatLng(), 100, {
@@ -228,6 +231,7 @@ function addCircle(marker) {
             fillopacity: 0.5,
 
         }).bindPopup(popup).addTo(map);
+        pointsValid();
         circles[name] = circle;
 
         marker.on('drag', (e) => {
@@ -360,12 +364,44 @@ function changeView() {
     if (res) {
         alert("Please select values for all the boxes");
     } else {
-        data2_entry.style.display = 'block';
-        data2_form = document.querySelector("#more-data-entry-form");
+      send_user_data();
+      data2_entry.style.display = 'block';
+      data2_form = document.querySelector("#more-data-entry-form");
         data_entry.style.display = 'none';
     }
 }
 
+function send_user_data(){
+
+      res = {}
+      s = data_entry.getElementsByTagName('select');
+      for (var i = 0; i < s.length; i++) {
+          res[s[i].id] = s[i].options[s[i].selectedIndex].value;
+      }
+      s = document.getElementById('nav_skill');
+      res[s.id] = s.value;
+      res["position"] = position_id
+      if(user_id){
+      fetch(server + "/user/"+user_id, {
+              method: "PUT",
+              body: JSON.stringify(res),
+              headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+              }
+          }).then((response) => response.json())
+          .then((json) => user_id = json['id']);
+      } else {
+      fetch(server + "/user", {
+              method: "POST",
+              body: JSON.stringify(res),
+              headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+              }
+          }).then((response) => response.json())
+          .then((json) => user_id = json['id']);
+      }
+  console.log("send_user: user_id="+user_id+" position_id="+position_id);
+}
 function pointsValid() {
     if (Object.values(positions).length != 3) {
         console.log("not enough points in check")
@@ -420,6 +456,9 @@ function pointsValid() {
     }
 
 }
+ function to_wkt(point){
+    return "POINT(" + point.getLatLng().lng + " " + point.getLatLng().lat + ")";
+ }
 
 var buttonAdded = false;
 function displayButton() {
@@ -436,27 +475,44 @@ function displayButton() {
         info.append(div);
         buttonAdded = true;
     }
+  send_pos_data();
 }
 
-function collectData() {
-    var startPos = positions["start"] ? positions["start"].getLatLng() : "";
-    var endPos = positions["end"] ? positions["end"].getLatLng() : "";
-    var lostPos = positions["lost"] ? positions["lost"].getLatLng() : "";
-    res = {
-        start: startPos,
-        end: endPos,
-        lost: lostPos
-    };
-    res["start_radius"] = circles['start'] ? circles['start'].getRadius() : 0;
-    res["lost_radius"] = circles['lost'] ? circles['lost'].getRadius() : 0;
-    res["end_radius"] = circles['end'] ? circles['end'].getRadius() : 0;
-    s = data_entry.getElementsByTagName('select');
-    for (var i = 0; i < s.length; i++) {
-        res[s[i].id] = s[i].options[s[i].selectedIndex].value;
-    }
-    s = document.getElementById('nav-skill');
-    res[s.id] = s.value;
+function get_pos_data(){
+res = {
+                    "start": to_wkt(positions["start"]),
+                    "end": to_wkt(positions["end"]),
+                    "lost": to_wkt(positions["lost"]),
+                    "start_radius": circles['start'] ? circles['start'].getRadius() : 0,
+                    "lost_radius": circles['lost'] ? circles['lost'].getRadius() : 0,
+                    "end_radius": circles['end'] ? circles['end'].getRadius() : 0,
+}
+return res;
+}
+function send_pos_data(){
+  if(position_id){
+        fetch(server + "/position/"+position_id, {
+                method: "PUT",
+                body: JSON.stringify(get_pos_data()),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => position_id = json['id']);
+  } else {
+        fetch(server + "/position", {
+                method: "POST",
+                body: JSON.stringify(get_pos_data()),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => position_id = json['id']);
+  }
+  console.log("send_pos user_id="+user_id+" position_id="+position_id);
+}
 
+function get_event_data() {
     s = data2_entry.getElementsByTagName('select');
     for (var i = 0; i < s.length; i++) {
         res[s[i].id] = s[i].options[s[i].selectedIndex].value;
@@ -468,6 +524,41 @@ function collectData() {
     for (var i = 0; i < s.length; i++) {
         res[s[i].id] = s[i].value;
     }
+    console.log("before send_event: user_id=" + user_id + " position_id=" + position_id + " event_id=" + event_id);
+    res['user'] = user_id;
+    res['position'] = position_id;
+    return res;
+}
+
+function send_event_data() {
+    res = get_event_data()
+    if (event_id == 0) {
+        fetch(server + "/event", {
+                method: "POST",
+                body: JSON.stringify(res),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => event_id = json['id']);
+    } else {
+        fetch(server + "/event/" + event_id, {
+                method: "PUT",
+                body: JSON.stringify(res),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            }).then((response) => response.json())
+            .then((json) => event_id = json['id']);
+    }
+    console.log("after send_event: user_id=" + user_id + " position_id=" + position_id + " event_id=" + event_id);
+}
+
+function collectData() {
+    send_pos_data();
+    send_user_data();
+    send_event_data();
+
     //set res data nicely!
 
     let html = `<ul>`;
