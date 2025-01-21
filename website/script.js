@@ -1,6 +1,7 @@
 document.getElementById('map').style.cursor = '' //(reset)
 
-const server = "http://127.0.0.1:8000"
+const server = env.server?env.server:"http://127.0.0.1:8000";
+console.log("writing to server at "+server);
 const dialogM = document.querySelector("#markers");
 const closeButtonM = document.querySelector("#markers > button:nth-child(2)");
 const proceedButtonM = document.querySelector("#markers > button:nth-child(3)");
