@@ -76,11 +76,24 @@ function clicked(e) {
 }
 var buttons = document.querySelector("#buttonBar");
 var info = document.querySelector("#info");
+var map_div = document.querySelector("#map");
+var sidebar = document.querySelector("#sidebar");
+var outer = document.querySelector("#outer");
 var data_entry = document.querySelector('#data-entry-panel');
 var data2_entry = document.querySelector('#more-data');
-
+document.getElementById("terms").checked = false;
+map_div.style.display = 'none';
 data_entry.style.display = 'none';
 data2_entry.style.display = 'none';
+sidebar.style.display = 'none';
+outer.style.display = 'none';
+
+function continueToSurvey(e){
+  sidebar.style.display = 'block';
+  outer.style.display = 'block';
+  map_div.style.display = 'block';
+  map.invalidateSize();
+}
 var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
