@@ -214,22 +214,22 @@ function mapClickListen(e) {
 
 
 function addCircle(marker) {
-    name = names[marker.options.title];
-    if (!circles[name]) {
+    myname = names[marker.options.title];
+    if (!circles[myname]) {
         const popup = document.createElement("div");
         popup.innerHTML = 'adjust radius: ';
         
         const up = document.createElement("button");
-        up.id = name+"_up_button";
-        up.innerHTML = `<i id='${name}_up' class="arrow up"></i>`;
+        up.id = myname+"_up_button";
+        up.innerHTML = `<i id='${myname}_up' class="arrow up"></i>`;
         up.addEventListener('click', function(e) {
           id = e.target.id.substring(0,e.target.id.indexOf('_'));
           circles[id].setRadius(circles[id].getRadius()+10);
         });
         popup.appendChild(up);
         const down = document.createElement("button");
-        down.id = name+"_down_button";
-        down.innerHTML = `<i id='${name}_down' class="arrow down"></i>`;
+        down.id = myname+"_down_button";
+        down.innerHTML = `<i id='${myname}_down' class="arrow down"></i>`;
         down.addEventListener('click', function(e) {
           id = e.target.id.substring(0,e.target.id.indexOf('_'));
           radius = circles[id].getRadius();
@@ -240,13 +240,13 @@ function addCircle(marker) {
         });
         popup.appendChild(down);
         circle = L.circle(marker.getLatLng(), 100, {
-            color: colors[name],
-            fillcolor: colors[name],
+            color: colors[myname],
+            fillcolor: colors[myname],
             fillopacity: 0.5,
 
         }).bindPopup(popup).addTo(map);
         pointsValid();
-        circles[name] = circle;
+        circles[myname] = circle;
 
         marker.on('drag', (e) => {
             circles[names[e.target.options.title]].setLatLng(e.latlng);
@@ -256,6 +256,7 @@ function addCircle(marker) {
 
 function setMarker(e) {
     map.removeEventListener("click", setMarker, false);
+    console.log(name+" -> "+names[name]+" -> "+positions[names[name]]+ " "+!positions[names[name]])
     if (!positions[names[name]]) {
         if (names[name] == 'start') {
             icon = new L.Icon({
@@ -478,9 +479,10 @@ var buttonAdded = false;
 function displayButton() {
     // add a button to display the questions when they are happy with the map locations
     if (!buttonAdded) {
+        outer.style.display = 'none';
         const div = document.createElement("div");
         div.id = 'continue';
-        div.innerHTML = "<hr/><p>If you are happy with the position of the points (and circles) you can go on to the survey about factors that may have contributed to your getting lost.</p>"
+        div.innerHTML = "<hr/><p><strong>When you are happy with the position of the points (and circles) you can go on to the survey about factors that may have contributed to your getting lost.</strong></p>"
         const mvButton = document.createElement("button");
         mvButton.innerHTML = "Continue to survey";
         mvButton.addEventListener("click", displayChecks);

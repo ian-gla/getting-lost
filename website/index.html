@@ -11,27 +11,55 @@
 </head>
 
 <body>
-  <div id="outer">
-    <div id='buttonBar'></div>
-  </div>
 
   <div class="splash">
     <H1>Welcome to the Getting Lost Project</H1>
-    <p>
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    <p> This research
+    seeks to investigate the way that pedestrians become lost in urban
+    environments. Scientists have many theories as to why people become
+    disorientated while attempting to find their way from one place to
+    another. In this research we ask you to mark three points on a map
+    represent the places where you last knew where you were, where you
+    think you became lost and where you next knew where you were. Then
+    we will ask a few broad questions about you to allow us to group
+    your data with other people’s results, and some short questions
+    that will tell us more about where you got lost.
 </p>
 
 <p>
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+<h2>Data Storage and Protection</h2>
+
+<p>
+Upon submission the data is given an ID number, and sent securely to our
+secure database. To protect your privacy we will only ask for points on your route before and after you got
+lost rather than where your starting point and destination. 
 </p>
 
-<H2>Privacy Notice and Data Usage</H2>
-    <p>
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+<p>
+Participation in this research is entirely voluntary. The potential benefits to the participants include:
+
+<ul>
+  <li>Better pedestrian navigation applications,</li>
+
+  <li>Improved advise to local councils on how to provide sign posting.</li>
+
+</ul>
 </p>
 
-<div >
-<label for="terms">Accept the above terms</label>
+<p>
+Whenever any data is transmitted or stored, there is always a very small risk that they could be accessed by an unauthorised person or persons. This is why we mitigate these risks by:
+
+<ul>
+<li>Minimising the data we collect</li>
+<li>Using secure means of transmitting data</li>
+  <li>Limiting the people who can access the data to those necessary on the research team</li>
+    <li>Only carrying out the research using the data on University of Glasgow systems</li>
+    </ul>
+
+</p>
+
+<div id="accept">
+  <label for="terms"><strong>Accept the above terms</strong></label>
 <input type='checkbox' id="terms" name="terms" onchange='continueToSurvey()'/>
 </div>
   </div>
@@ -48,6 +76,9 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
         double click on the flag to add a "circle of Uncertainty" of 100m. If you would like to change the size
         of the circle you can click on the circle to change it's radius.</p>
       </div>
+  <div id="outer">
+    <div id='buttonBar'></div>
+  </div>
       <div class="data-panel" id="data-entry-panel">
         <p>Please tell us a little about your self:</p>
         <form id="data-entry-form">
