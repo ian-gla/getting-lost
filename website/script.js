@@ -88,11 +88,29 @@ data2_entry.style.display = 'none';
 sidebar.style.display = 'none';
 outer.style.display = 'none';
 
-function continueToSurvey(e){
-  sidebar.style.display = 'block';
-  outer.style.display = 'block';
-  map_div.style.display = 'block';
-  map.invalidateSize();
+function continueToSurvey(e) {
+
+    where = document.getElementById('where');
+    if (!where) {
+        // move to users location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                latit = position.coords.latitude;
+                longit = position.coords.longitude;
+                // move the map to have the location in its center
+                center = [latit, longit];
+                map.panTo(new L.LatLng(latit, longit));
+                positions = {};
+            });
+        }
+    } else {
+        geocoder.setQuery(where.value);
+        geocoder._geocode();
+    }
+    sidebar.style.display = 'block';
+    outer.style.display = 'block';
+    map_div.style.display = 'block';
+    map.invalidateSize();
 }
 var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -161,18 +179,9 @@ var geocoder = L.Control.geocoder({
     var ll = e.geocode.center;
     map.panTo(ll);
 });
+
 geocoder.addTo(map)._expand();
-// move to users location
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-        latit = position.coords.latitude;
-        longit = position.coords.longitude;
-        // move the map to have the location in its center
-        center = [latit, longit];
-        map.panTo(new L.LatLng(latit, longit));
-        positions = {};
-    });
-}
+
 
 L.control.scale({
     "position": "bottomright"
@@ -335,6 +344,7 @@ function cleanup() {
     document.getElementById('continue').remove();
     buttonAdded = false;
 
+    outer.style.display = 'block';
     buttons.style.display = 'block';
     data_entry.style.display = 'none';
     data2_entry.style.display = 'none';
