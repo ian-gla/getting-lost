@@ -3,12 +3,15 @@ from data.schemas.position import PositionCreate, PositionResponse, PositionUpda
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 from data.exceptions import BadRequest, Missing
+import logging
 
 router = APIRouter(prefix="/position")
-
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @router.post("/")
 async def create(posit: PositionCreate) -> PositionResponse:
+    logger.info("Post called")
     try:
         id = position.create_position(posit)
         return {"id": id}

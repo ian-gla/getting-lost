@@ -1,7 +1,42 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import position, user, event
+import logging
 
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "standard": {"format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "default": {
+            "level": "INFO",
+            "formatter": "standard",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",  # Default is stderr
+        },
+    },
+    "loggers": {
+        "": {  # root logger
+            "level": "INFO", #"INFO",
+            "handlers": ["default"],
+            "propagate": False,
+        },
+        "uvicorn.error": {
+            "level": "INFO",
+            "handlers": ["default"],
+        },
+        "uvicorn.access": {
+            "level": "INFO",
+            "handlers": ["default"],
+        },
+    },
+}
+
+logging.config.dictConfig(LOGGING_CONFIG)
+
+logger = logging.getLogger(__name__)
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -13,9 +48,9 @@ def create_app() -> FastAPI:
     # TODO: update this in production
 
     origins = [
-        "http://localhost:8000/",
-        "http://127.0.0.1:8000/",
-        "*",
+	"http://chekov.geog.gla.ac.uk/getting-lost/"
+        "http://localhost:1234/",
+        "http://127.0.0.1:1234/",
     ]
 
     app.add_middleware(

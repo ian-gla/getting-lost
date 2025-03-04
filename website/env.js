@@ -1,3 +1,3 @@
 env = {
-  server: 'http://localhost:8000'
+  server: 'http://chekov.gla.ac.uk:8000'
 }
